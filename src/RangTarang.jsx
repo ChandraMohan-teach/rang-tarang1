@@ -15,6 +15,10 @@ const COURSES = [
   { name: "Oil Colour", tag: "Depth", icon: "palette", desc: "Layering, glazing and texture — for students ready to work slow and rich." },
   { name: "Sculpture", tag: "Form", icon: "hand", desc: "Three-dimensional thinking: clay modelling and basic relief work." },
   { name: "NIFT Entrance Prep", tag: "Entrance", icon: "star", desc: "Focused preparation for NIFT entrance exams — creative ability, observation & design thinking." },
+  { name: "NID Entrance Prep", tag: "Entrance", icon: "star", desc: "Comprehensive training for NID entrance — design aptitude, creativity, and studio test preparation." },
+  { name: "Pearl / AIEED Prep", tag: "Entrance", icon: "star", desc: "Targeted preparation for Pearl Academy & AIEED — portfolio building, situational tests & design fundamentals." },
+  { name: "BFA Preparation", tag: "Certification", icon: "award", desc: "Bachelor of Fine Arts entrance coaching — covering all major Indian art colleges and university entrance exams." },
+  { name: "MFA Preparation", tag: "Certification", icon: "award", desc: "Master of Fine Arts entrance coaching — advanced portfolio development and specialised studio practice." },
 ];
 
 const GALLERY = [
@@ -1088,7 +1092,7 @@ export default function RangTarang() {
   const [navOpen, setNavOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
-  const [form, setForm] = useState({ name: "", phone: "", course: "Sketching", mode: "In-studio", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", course: ["Sketching"], mode: "In-studio", message: "" });
   const [statsRef, statsVis] = useReveal();
 
   /* ── Send enrollment straight to your inbox, via EmailJS ─────────────
@@ -1132,7 +1136,7 @@ export default function RangTarang() {
         {
           name: form.name,
           phone: form.phone,
-          course: form.course,
+          course: Array.isArray(form.course) ? form.course.join(", ") : form.course,
           mode: form.mode,
           message: form.message || "No additional message.",
         },
@@ -1228,6 +1232,11 @@ export default function RangTarang() {
         /* ── BADGE POP ── */
         .badge-pop{animation:badgePop 6s ease-in-out infinite}
         .badge-pop-2{animation:badgePop 6s ease-in-out infinite 2s}
+        /* ── TICKER BANNER ── */
+        @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .ticker-wrap{overflow:hidden;white-space:nowrap;width:100%;border-radius:100px;padding:7px 0;margin-bottom:16px}
+        .ticker-inner{display:inline-block;animation:tickerScroll 20s linear infinite}
+        .ticker-inner:hover{animation-play-state:paused}
         .badge-pop-3{animation:badgePop 6s ease-in-out infinite 4s}
         @keyframes badgePop{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-10px) scale(1.04)}70%{transform:translateY(-5px) scale(1.01)}}
         /* ── CARD HOVER ── */
@@ -1366,6 +1375,18 @@ export default function RangTarang() {
         <div style={{ position:"absolute", top:200, left:180, zIndex:1 }} className="float-anim-med"><DecoBrush size={44} color={C.lavender} opacity={.15}/></div>
 
         <div style={{ position:"relative", zIndex:2 }}>
+        <FadeUp>
+          {/* Running ticker banner */}
+          <div className="ticker-wrap" style={{ background:`linear-gradient(90deg,${C.forest},${C.jade})` }}>
+            <div className="ticker-inner">
+              {[...Array(4)].map((_,i) => (
+                <span key={i} style={{ fontSize:12, fontWeight:600, color:"#fff", letterSpacing:"1.5px", textTransform:"uppercase", padding:"0 32px" }}>
+                  ✦ Special Classes for NIFT &nbsp;•&nbsp; NID &nbsp;•&nbsp; Pearl &nbsp;•&nbsp; AIEED &nbsp;•&nbsp; BFA &nbsp;•&nbsp; MFA
+                </span>
+              ))}
+            </div>
+          </div>
+        </FadeUp>
         <FadeUp>
           <div className="hero-pill-sub">
           <div style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"6px 16px", borderRadius:100, background:C.jadeLight, marginBottom:28, border:`1px solid ${C.jade}33` }}>
@@ -1589,50 +1610,48 @@ export default function RangTarang() {
             </ParallaxFade>
           </div>
 
-          {/* Row 1: Sketching · Painting · Water Colour */}
-          <div className="courses-row" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:16 }}>
-            {[0,1,2].map((i) => {
-              const c = COURSES[i];
-              const icons = ["✏️","🖌️","💧","🎨","🏺","🎓"];
-              return (
-                <FadeUp key={c.name} delay={i*70}>
-                  <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
-                    style={{ background:activeCard===i?C.jadeLight:C.card, borderRadius:20, padding:"28px 22px", border:`1.5px solid ${activeCard===i?C.jade:C.border}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
-                    {activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})` }}/>}
-                    <div style={{ width:52, height:52, borderRadius:14, background:activeCard===i?`${C.jade}22`:C.forest+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:16 }}>{icons[i]}</div>
-                    <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:activeCard===i?`${C.jade}22`:C.jadeLight, color:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${C.jade}33` }}>{c.tag}</span>
-                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:C.ink, marginBottom:10 }}>{c.name}</h3>
-                    <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
-                    {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:C.jade, color:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
-                  </div>
-                </FadeUp>
-              );
-            })}
-          </div>
-          {/* Row 2: Oil Colour · NIFT (centre, featured) · Sculpture */}
-          <div className="courses-row" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:48 }}>
-            {[3,5,4].map((origIdx) => {
-              const c = COURSES[origIdx];
-              const i = origIdx;
-              const icons = ["✏️","🖌️","💧","🎨","🏺","🎓"];
-              const isNIFT = origIdx === 5;
-              return (
-                <FadeUp key={c.name} delay={i*70}>
-                  <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
-                    style={{ background: isNIFT?(activeCard===i?C.jadeLight:C.lavLight):(activeCard===i?C.jadeLight:C.card), borderRadius:20, padding:"28px 22px", border:`1.5px solid ${isNIFT?C.lavender+"66":(activeCard===i?C.jade:C.border)}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
-                    {isNIFT && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.lavender},${C.jade},${C.lavender})` }}/>}
-                    {!isNIFT && activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})` }}/>}
-                    {isNIFT && <div style={{ position:"absolute", top:10, right:12, fontSize:10, fontWeight:700, color:C.lavender, letterSpacing:"1px", opacity:.75 }}>★ FEATURED</div>}
-                    <div style={{ width:52, height:52, borderRadius:14, background:isNIFT?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:16 }}>{icons[i]}</div>
-                    <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:isNIFT?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:isNIFT?C.lavender:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${isNIFT?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
-                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:isNIFT?C.lavender:C.ink, marginBottom:10 }}>{c.name}</h3>
-                    <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
-                    {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:isNIFT?C.lavender:C.jade, color:isNIFT?C.midnight:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
-                  </div>
-                </FadeUp>
-              );
-            })}
-          </div>
+          {/* Courses grid — all 10 courses with background patterns */}
+          {(() => {
+            const icons = ["✏️","🖌️","💧","🎨","🏺","🎓","🎯","💎","🖼️","🏆"];
+            const bgPatterns = [
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cline x1='0' y1='30' x2='120' y2='30' stroke='%23408175' stroke-width='0.6' opacity='0.18'/%3E%3Cline x1='0' y1='60' x2='120' y2='60' stroke='%23408175' stroke-width='0.6' opacity='0.18'/%3E%3Cline x1='0' y1='90' x2='120' y2='90' stroke='%23408175' stroke-width='0.6' opacity='0.18'/%3E%3Cline x1='30' y1='0' x2='30' y2='120' stroke='%23408175' stroke-width='0.4' opacity='0.12'/%3E%3Cline x1='60' y1='0' x2='60' y2='120' stroke='%23408175' stroke-width='0.4' opacity='0.12'/%3E%3Cline x1='90' y1='0' x2='90' y2='120' stroke='%23408175' stroke-width='0.4' opacity='0.12'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cellipse cx='60' cy='60' rx='50' ry='35' fill='none' stroke='%23408175' stroke-width='1.2' opacity='0.12'/%3E%3Cellipse cx='60' cy='60' rx='35' ry='20' fill='none' stroke='%23B5B9F0' stroke-width='0.8' opacity='0.1'/%3E%3Ccircle cx='60' cy='60' r='8' fill='%23408175' opacity='0.1'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cellipse cx='60' cy='80' rx='55' ry='10' fill='none' stroke='%23B5B9F0' stroke-width='1' opacity='0.2'/%3E%3Cellipse cx='60' cy='95' rx='50' ry='8' fill='none' stroke='%23B5B9F0' stroke-width='0.8' opacity='0.15'/%3E%3Cellipse cx='60' cy='65' rx='45' ry='8' fill='none' stroke='%23408175' stroke-width='0.8' opacity='0.12'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath d='M0 60 Q30 45 60 60 Q90 75 120 60' stroke='%232E4540' stroke-width='5' fill='none' opacity='0.12'/%3E%3Cpath d='M0 80 Q30 65 60 80 Q90 95 120 80' stroke='%23408175' stroke-width='4' fill='none' opacity='0.1'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cellipse cx='60' cy='70' rx='40' ry='50' fill='none' stroke='%232E4540' stroke-width='1' opacity='0.15'/%3E%3Cellipse cx='60' cy='55' rx='22' ry='28' fill='none' stroke='%23408175' stroke-width='0.8' opacity='0.12'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath d='M60 20 L65 40 L85 40 L70 52 L75 72 L60 60 L45 72 L50 52 L35 40 L55 40 Z' fill='%23B5B9F0' opacity='0.15'/%3E%3Ccircle cx='60' cy='60' r='45' fill='none' stroke='%23B5B9F0' stroke-width='0.8' opacity='0.1'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect x='10' y='10' width='45' height='45' rx='4' fill='none' stroke='%23B5B9F0' stroke-width='1' opacity='0.18'/%3E%3Crect x='65' y='10' width='45' height='45' rx='4' fill='%23B5B9F0' opacity='0.08'/%3E%3Crect x='10' y='65' width='45' height='45' rx='4' fill='%23B5B9F0' opacity='0.08'/%3E%3Crect x='65' y='65' width='45' height='45' rx='4' fill='none' stroke='%23B5B9F0' stroke-width='1' opacity='0.18'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpolygon points='60,10 100,40 90,90 30,90 20,40' fill='none' stroke='%23B5B9F0' stroke-width='1' opacity='0.18'/%3E%3Cpolygon points='60,10 100,40 60,50' fill='%23B5B9F0' opacity='0.07'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect x='8' y='8' width='104' height='104' rx='4' fill='none' stroke='%23408175' stroke-width='1.5' opacity='0.15'/%3E%3Crect x='18' y='18' width='84' height='84' rx='2' fill='none' stroke='%23408175' stroke-width='0.7' opacity='0.1'/%3E%3Cpath d='M30 90 L50 55 L70 75 L85 45 L105 90' stroke='%232E4540' stroke-width='1.2' fill='none' opacity='0.12'/%3E%3C/svg%3E")`,
+              `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cellipse cx='55' cy='65' rx='40' ry='30' fill='none' stroke='%23408175' stroke-width='1' opacity='0.15'/%3E%3Cellipse cx='48' cy='52' rx='8' ry='10' fill='%23408175' opacity='0.1'/%3E%3Ccircle cx='75' cy='50' r='7' fill='%23B5B9F0' opacity='0.15'/%3E%3C/svg%3E")`,
+            ];
+            const isSpecial = (idx) => idx >= 5;
+            return (
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:16, marginBottom:48 }}>
+                {COURSES.map((c, i) => {
+                  const special = isSpecial(i);
+                  return (
+                    <FadeUp key={c.name} delay={i*50}>
+                      <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
+                        style={{ background:special?(activeCard===i?C.jadeLight:C.lavLight):(activeCard===i?C.jadeLight:C.card), borderRadius:20, padding:"28px 22px", border:`1.5px solid ${special?C.lavender+"66":(activeCard===i?C.jade:C.border)}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
+                        <div style={{ position:"absolute", inset:0, borderRadius:20, backgroundImage:bgPatterns[i], backgroundRepeat:"repeat", backgroundSize:"120px 120px", pointerEvents:"none" }}/>
+                        {special && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.lavender},${C.jade},${C.lavender})` }}/>}
+                        {!special && activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})` }}/>}
+                        {special && <div style={{ position:"absolute", top:10, right:12, fontSize:10, fontWeight:700, color:C.lavender, letterSpacing:"1px", opacity:.75 }}>★ FEATURED</div>}
+                        <div style={{ position:"relative" }}>
+                          <div style={{ width:52, height:52, borderRadius:14, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:16 }}>{icons[i]}</div>
+                          <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:special?C.lavender:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${special?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
+                          <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:special?C.lavender:C.ink, marginBottom:10 }}>{c.name}</h3>
+                          <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
+                          {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:special?C.lavender:C.jade, color:special?C.midnight:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
+                        </div>
+                      </div>
+                    </FadeUp>
+                  );
+                })}
+              </div>
+            );
+          })()}
 
           <div className="two-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
             <FadeUp>
@@ -1782,7 +1801,7 @@ export default function RangTarang() {
                   </p>
                   <button
                     onClick={() => {
-                      setForm({ name:"", phone:"", course:"Sketching", mode:"In-studio", message:"" });
+                      setForm({ name:"", phone:"", course:["Sketching"], mode:"In-studio", message:"" });
                       setSubmitted(false);
                       setSubmitError(null);
                     }}
@@ -1812,22 +1831,38 @@ export default function RangTarang() {
                       style={{ width:"100%", padding:"12px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg, color:C.ink, fontSize:14 }}/>
                   </div>
 
-                  {/* Course + Mode */}
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:14 }}>
-                    <div>
-                      <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Course</label>
-                      <select name="Course" value={form.course} onChange={e => setForm({...form, course:e.target.value})}
-                        style={{ width:"100%", padding:"12px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg, color:C.ink, fontSize:14 }}>
-                        {COURSES.map(c => <option key={c.name}>{c.name}</option>)}
-                      </select>
+                  {/* Courses multi-select + Mode */}
+                  <div>
+                    <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Course(s) — select all that apply</label>
+                    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(175px,1fr))", gap:8, padding:"14px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg }}>
+                      {COURSES.map(c => {
+                        const checked = form.course.includes(c.name);
+                        return (
+                          <label key={c.name} style={{ display:"flex", alignItems:"center", gap:8, cursor:"pointer", userSelect:"none" }}>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => {
+                                const next = checked
+                                  ? form.course.filter(x => x !== c.name)
+                                  : [...form.course, c.name];
+                                setForm({...form, course: next.length ? next : [c.name]});
+                              }}
+                              style={{ accentColor:C.jade, width:15, height:15, cursor:"pointer" }}
+                            />
+                            <span style={{ fontSize:13, color:checked?C.jade:C.muted, fontWeight:checked?600:400, transition:"color .2s" }}>{c.name}</span>
+                          </label>
+                        );
+                      })}
                     </div>
-                    <div>
-                      <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Mode</label>
-                      <select name="Mode" value={form.mode} onChange={e => setForm({...form, mode:e.target.value})}
-                        style={{ width:"100%", padding:"12px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg, color:C.ink, fontSize:14 }}>
-                        {["In-studio","Home Tuition","Online"].map(o => <option key={o}>{o}</option>)}
-                      </select>
-                    </div>
+                  </div>
+                  {/* Mode */}
+                  <div>
+                    <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Mode</label>
+                    <select name="Mode" value={form.mode} onChange={e => setForm({...form, mode:e.target.value})}
+                      style={{ width:"100%", padding:"12px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg, color:C.ink, fontSize:14 }}>
+                      {["In-studio","Home Tuition","Online"].map(o => <option key={o}>{o}</option>)}
+                    </select>
                   </div>
 
                   {/* Message */}
