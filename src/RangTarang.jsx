@@ -1270,6 +1270,12 @@ export default function RangTarang() {
         .n-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:#408175;transition:width .3s}
         .n-link:hover{color:#408175!important}
         .n-link:hover::after{width:100%}
+        /* ── CONTACT GRID OVERFLOW FIX ── */
+        /* Without this, a fixed-pixel-width child (like the ink-art accent below)
+           can force its grid column wider than the viewport on phones, which in
+           turn squeezes/clips the enroll form sitting in the same grid. */
+        .contact-grid > div{min-width:0}
+        .ink-accent svg{width:100%!important;height:auto!important;display:block}
         /* ── RESPONSIVE ── */
         @media(max-width:768px){
           .hide-mob{display:none!important}
@@ -1705,7 +1711,7 @@ export default function RangTarang() {
               ))}
             </div>
             {/* mini ink art painting as accent */}
-            <div style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, opacity:.85 }}>
+            <div className="ink-accent" style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, opacity:.85, width:"100%" }}>
               <PaintingInkArt w={380} h={160} dark={dark}/>
             </div>
             {/* Map card — opens Google Maps in new tab */}
