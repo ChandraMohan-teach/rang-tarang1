@@ -1088,7 +1088,7 @@ export default function RangTarang() {
   const [navOpen, setNavOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
-  const [form, setForm] = useState({ name: "", phone: "", courses: [], mode: "In-studio", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", course: "Sketching", mode: "In-studio", message: "" });
   const [statsRef, statsVis] = useReveal();
 
   /* ── Send enrollment straight to your inbox, via EmailJS ─────────────
@@ -1132,7 +1132,7 @@ export default function RangTarang() {
         {
           name: form.name,
           phone: form.phone,
-          course: form.courses.length ? form.courses.join(", ") : "Not specified",
+          course: form.course,
           mode: form.mode,
           message: form.message || "No additional message.",
         },
@@ -1219,7 +1219,6 @@ export default function RangTarang() {
         @keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes spinRev{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
-        @keyframes tickerRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         /* ── SHIMMER / PULSE ── */
         .shimmer{animation:shimmer 2.5s ease-in-out infinite}
         @keyframes shimmer{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
@@ -1367,16 +1366,6 @@ export default function RangTarang() {
         <div style={{ position:"absolute", top:200, left:180, zIndex:1 }} className="float-anim-med"><DecoBrush size={44} color={C.lavender} opacity={.15}/></div>
 
         <div style={{ position:"relative", zIndex:2 }}>
-
-        {/* ── RUNNING TICKER BANNER ───────────────────────────────────── */}
-        <div style={{ overflow:"hidden", whiteSpace:"nowrap", background:`linear-gradient(90deg,${C.forest}22,${C.lavender}22)`, borderRadius:100, padding:"6px 0", marginBottom:20, border:`1px solid ${C.lavender}44`, position:"relative" }}>
-          <div style={{ display:"inline-block", animation:"tickerRun 22s linear infinite", paddingLeft:"100%" }}>
-            {["✦ Special Classes for NIFT","✦ NID Entrance Prep","✦ Pearl Academy Coaching","✦ AIEED Preparation","✦ BFA Programmes","✦ MFA Certification","✦ Special Classes for NIFT","✦ NID Entrance Prep","✦ Pearl Academy Coaching","✦ AIEED Preparation","✦ BFA Programmes","✦ MFA Certification"].map((t,i) => (
-              <span key={i} style={{ display:"inline-block", fontSize:11, fontWeight:700, color:C.lavender, letterSpacing:"1.5px", textTransform:"uppercase", marginRight:48 }}>{t}</span>
-            ))}
-          </div>
-        </div>
-
         <FadeUp>
           <div className="hero-pill-sub">
           <div style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"6px 16px", borderRadius:100, background:C.jadeLight, marginBottom:28, border:`1px solid ${C.jade}33` }}>
@@ -1466,7 +1455,7 @@ export default function RangTarang() {
         <div ref={statsRef}>
           <FadeUp delay={280}>
             <div style={{ marginTop:72, display:"flex", flexWrap:"wrap", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"28px 0" }}>
-              {[["10","+","courses offered"],["25","+","years experience"],["5","★","student rating"],["10000","+","students taught"]].map(([v,s,l],i) => (
+              {[["6","+","courses offered"],["25","+","years experience"],["5","★","student rating"],["10000","+","students taught"]].map(([v,s,l],i) => (
                 <div key={l} style={{ flex:"1 1 120px", textAlign:"center", padding:"0 16px", borderLeft:i>0?`1px solid ${C.border}`:"none" }}>
                   <StatCard value={parseInt(v)} suffix={s} label={l} active={statsVis} C={C}/>
                 </div>
@@ -1600,58 +1589,45 @@ export default function RangTarang() {
             </ParallaxFade>
           </div>
 
-          {/* ── ALL COURSES — unified grid with SVG bg art ────────────── */}
-          <div className="courses-row" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:48 }}>
-            {COURSES.map((c, i) => {
-              const icons = ["✏️","🖌️","💧","🎨","🏺","🎓","📐","👗","🏠","🖼️"];
-              const isEntrance = i >= 5;
-              const accentColor = isEntrance ? "#B5B9F0" : "#408175";
-
-              // Real photo backgrounds — Unsplash CDN (free, no auth needed)
-              const cardPhotos = [
-                "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&q=60&fit=crop",   // Sketching — hand with pencil on paper
-                "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&q=60&fit=crop",   // Painting — colourful acrylic palette & brush
-                "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&q=60&fit=crop",   // Water Colour — watercolour paints & wash
-                "https://images.unsplash.com/photo-1632510524769-a0ea5c5b3c9a?w=400&q=60&fit=crop",   // Oil Colour — oil paint tubes & canvas
-                "https://images.unsplash.com/photo-1561839561-b13bcfe95249?w=400&q=60&fit=crop",      // Sculpture — hands sculpting clay
-                "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=60&fit=crop",      // NIFT — fashion design sketches & fabric
-                "https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=400&q=60&fit=crop",   // NID — product/industrial design drawing
-                "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=60&fit=crop",   // Pearl — fashion / garment design
-                "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&q=60&fit=crop",   // AIEED — interior design room
-                "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&q=60&fit=crop",   // BFA/MFA — fine arts gallery / canvas
-              ];
-
+          {/* Row 1: Sketching · Painting · Water Colour */}
+          <div className="courses-row" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:16 }}>
+            {[0,1,2].map((i) => {
+              const c = COURSES[i];
+              const icons = ["✏️","🖌️","💧","🎨","🏺","🎓"];
               return (
-                <FadeUp key={c.name} delay={i*60}>
+                <FadeUp key={c.name} delay={i*70}>
                   <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
-                    style={{ background: isEntrance ? (activeCard===i ? C.jadeLight : C.lavLight) : (activeCard===i ? C.jadeLight : C.card), borderRadius:20, padding:"28px 22px", border:`1.5px solid ${isEntrance ? accentColor+"66" : (activeCard===i ? C.jade : C.border)}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
-                    {/* Real photo background */}
-                    <div style={{
-                      position:"absolute", inset:0, borderRadius:20,
-                      backgroundImage:`url(${cardPhotos[i]})`,
-                      backgroundSize:"cover", backgroundPosition:"center",
-                      opacity: activeCard===i ? 0.18 : 0.11,
-                      transition:"opacity .35s",
-                      pointerEvents:"none",
-                    }}/>
-                    {/* Gradient overlay so text stays readable */}
-                    <div style={{
-                      position:"absolute", inset:0, borderRadius:20,
-                      background: isEntrance
-                        ? `linear-gradient(145deg, ${C.lavLight}ee 0%, ${C.lavLight}88 60%, transparent 100%)`
-                        : (activeCard===i
-                            ? `linear-gradient(145deg, ${C.jadeLight}ee 0%, ${C.jadeLight}88 60%, transparent 100%)`
-                            : `linear-gradient(145deg, ${C.card}ee 0%, ${C.card}99 55%, transparent 100%)`),
-                      pointerEvents:"none",
-                    }}/>
-                    {/* Accent top bar */}
-                    {(isEntrance || activeCard===i) && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${isEntrance?C.lavender:C.jade},${isEntrance?C.jade:C.lavender})` }}/>}
-                    {isEntrance && <div style={{ position:"absolute", top:10, right:12, fontSize:9, fontWeight:700, color:C.lavender, letterSpacing:"1px", opacity:.7, background:`${C.lavender}18`, padding:"2px 8px", borderRadius:100, border:`1px solid ${C.lavender}33` }}>ENTRANCE PREP</div>}
-                    <div style={{ width:46, height:46, borderRadius:12, background:isEntrance?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, marginBottom:14 }}>{icons[i]}</div>
-                    <span style={{ display:"inline-block", padding:"3px 9px", borderRadius:100, background:isEntrance?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:isEntrance?C.lavender:C.jade, fontSize:10, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:10, border:`1px solid ${isEntrance?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
-                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:17, fontWeight:700, color:isEntrance?C.lavender:C.ink, marginBottom:8 }}>{c.name}</h3>
-                    <p style={{ fontSize:12.5, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
-                    {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:16, padding:"8px 16px", borderRadius:100, background:isEntrance?C.lavender:C.jade, color:isEntrance?C.midnight:"#fff", fontSize:12, fontWeight:500 }}>Enroll →</button>}
+                    style={{ background:activeCard===i?C.jadeLight:C.card, borderRadius:20, padding:"28px 22px", border:`1.5px solid ${activeCard===i?C.jade:C.border}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
+                    {activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})` }}/>}
+                    <div style={{ width:52, height:52, borderRadius:14, background:activeCard===i?`${C.jade}22`:C.forest+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:16 }}>{icons[i]}</div>
+                    <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:activeCard===i?`${C.jade}22`:C.jadeLight, color:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${C.jade}33` }}>{c.tag}</span>
+                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:C.ink, marginBottom:10 }}>{c.name}</h3>
+                    <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
+                    {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:C.jade, color:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
+                  </div>
+                </FadeUp>
+              );
+            })}
+          </div>
+          {/* Row 2: Oil Colour · NIFT (centre, featured) · Sculpture */}
+          <div className="courses-row" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:48 }}>
+            {[3,5,4].map((origIdx) => {
+              const c = COURSES[origIdx];
+              const i = origIdx;
+              const icons = ["✏️","🖌️","💧","🎨","🏺","🎓"];
+              const isNIFT = origIdx === 5;
+              return (
+                <FadeUp key={c.name} delay={i*70}>
+                  <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
+                    style={{ background: isNIFT?(activeCard===i?C.jadeLight:C.lavLight):(activeCard===i?C.jadeLight:C.card), borderRadius:20, padding:"28px 22px", border:`1.5px solid ${isNIFT?C.lavender+"66":(activeCard===i?C.jade:C.border)}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
+                    {isNIFT && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.lavender},${C.jade},${C.lavender})` }}/>}
+                    {!isNIFT && activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})` }}/>}
+                    {isNIFT && <div style={{ position:"absolute", top:10, right:12, fontSize:10, fontWeight:700, color:C.lavender, letterSpacing:"1px", opacity:.75 }}>★ FEATURED</div>}
+                    <div style={{ width:52, height:52, borderRadius:14, background:isNIFT?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:16 }}>{icons[i]}</div>
+                    <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:isNIFT?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:isNIFT?C.lavender:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${isNIFT?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
+                    <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:isNIFT?C.lavender:C.ink, marginBottom:10 }}>{c.name}</h3>
+                    <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
+                    {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:isNIFT?C.lavender:C.jade, color:isNIFT?C.midnight:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
                   </div>
                 </FadeUp>
               );
@@ -1806,7 +1782,7 @@ export default function RangTarang() {
                   </p>
                   <button
                     onClick={() => {
-                      setForm({ name:"", phone:"", courses:[], mode:"In-studio", message:"" });
+                      setForm({ name:"", phone:"", course:"Sketching", mode:"In-studio", message:"" });
                       setSubmitted(false);
                       setSubmitError(null);
                     }}
@@ -1838,24 +1814,12 @@ export default function RangTarang() {
 
                   {/* Course + Mode */}
                   <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:14 }}>
-                    <div style={{ gridColumn:"1 / -1" }}>
-                      <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:10, textTransform:"uppercase", letterSpacing:".8px" }}>
-                        Courses <span style={{ fontSize:10, color:C.jade, fontWeight:400, letterSpacing:0, textTransform:"none" }}>(select all that apply)</span>
-                      </label>
-                      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(180px,1fr))", gap:8 }}>
-                        {COURSES.map(cr => {
-                          const checked = form.courses.includes(cr.name);
-                          return (
-                            <label key={cr.name} style={{ display:"flex", alignItems:"center", gap:8, padding:"9px 12px", borderRadius:10, border:`1.5px solid ${checked ? C.jade : C.border}`, background:checked ? `${C.jade}11` : C.bg, cursor:"pointer", transition:"all .2s", userSelect:"none" }}>
-                              <input type="checkbox" checked={checked} onChange={() => {
-                                const next = checked ? form.courses.filter(n => n!==cr.name) : [...form.courses, cr.name];
-                                setForm({...form, courses:next});
-                              }} style={{ accentColor:C.jade, width:14, height:14, cursor:"pointer" }}/>
-                              <span style={{ fontSize:13, color:checked?C.jade:C.muted, fontWeight:checked?600:400 }}>{cr.name}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
+                    <div>
+                      <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Course</label>
+                      <select name="Course" value={form.course} onChange={e => setForm({...form, course:e.target.value})}
+                        style={{ width:"100%", padding:"12px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg, color:C.ink, fontSize:14 }}>
+                        {COURSES.map(c => <option key={c.name}>{c.name}</option>)}
+                      </select>
                     </div>
                     <div>
                       <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Mode</label>
