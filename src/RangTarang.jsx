@@ -652,186 +652,226 @@ function HeroPainting({ dark }) {
   );
 }
 
-/* ─── HERO ILLUSTRATION — vibrant artist scene ───────────────── */
+/* ─── HERO ILLUSTRATION — sunlit studio with easel & painting ── */
 function HeroIllustration({ dark }) {
-  const bg = dark ? "#0d0b0b" : "#fff8f0";
+  const bg1 = dark ? "#12100f" : "#fdf6ee";
+  const bg2 = dark ? "#1a1410" : "#fceedd";
+  const wall = dark ? "#1c1816" : "#f5ede0";
+  const floor = dark ? "#0f0d0b" : "#e8d5ba";
+  const shadow = dark ? "rgba(0,0,0,0.55)" : "rgba(120,80,40,0.13)";
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display:"block" }}>
-      {/* Warm bright background */}
-      <rect width={420} height={420} fill={bg} rx={16}/>
+      <defs>
+        <radialGradient id="winGlow" cx="50%" cy="30%" r="60%">
+          <stop offset="0%" stopColor={dark?"#2a2010":"#fff8e8"} stopOpacity="1"/>
+          <stop offset="100%" stopColor={bg1} stopOpacity="1"/>
+        </radialGradient>
+        <radialGradient id="canvasGrad" cx="40%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#d4edff" stopOpacity="0.9"/>
+          <stop offset="100%" stopColor="#b8d8f0" stopOpacity="0.7"/>
+        </radialGradient>
+        <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={dark?"#181410":"#dfc8a8"}/>
+          <stop offset="100%" stopColor={dark?"#0e0c09":"#c9ae88"}/>
+        </linearGradient>
+        <linearGradient id="easelWood" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#7a4e28"/>
+          <stop offset="100%" stopColor="#9c6535"/>
+        </linearGradient>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
 
-      {/* BIG bold paint-wash blobs — full saturation */}
-      <ellipse cx={60} cy={70} rx={110} ry={90} fill="#FF6B6B" opacity={dark?0.18:0.28}/>
-      <ellipse cx={370} cy={80} rx={90} ry={75} fill="#FFD93D" opacity={dark?0.18:0.35}/>
-      <ellipse cx={350} cy={360} rx={120} ry={80} fill="#6BCB77" opacity={dark?0.15:0.30}/>
-      <ellipse cx={55} cy={360} rx={85} ry={65} fill="#4D96FF" opacity={dark?0.15:0.28}/>
-      <ellipse cx={210} cy={210} rx={80} ry={60} fill="#C77DFF" opacity={dark?0.10:0.18}/>
+      {/* ── BACKGROUND — warm sunlit room ── */}
+      <rect width={420} height={420} fill="url(#winGlow)" rx={16}/>
+      {/* Wall */}
+      <rect x={0} y={0} width={420} height={290} fill={wall} opacity={0.6} rx={16}/>
+      {/* Floor */}
+      <rect x={0} y={290} width={420} height={130} fill="url(#floorGrad)" rx={4}/>
+      {/* Floor highlight strip */}
+      <rect x={0} y={290} width={420} height={6} fill={dark?"#2a2010":"#c9ae88"} opacity={0.5}/>
+      {/* Baseboard */}
+      <rect x={0} y={374} width={420} height={14} fill={dark?"#111":"#d4b88a"} opacity={0.6}/>
 
-      {/* Paint splatter dots — vivid rainbow */}
+      {/* ── WINDOW — large, letting in golden light ── */}
+      <rect x={245} y={18} width={155} height={200} rx={10} fill={dark?"#1a2030":"#c8e8ff"} opacity={dark?0.5:0.75}/>
+      {/* Window frame */}
+      <rect x={245} y={18} width={155} height={200} rx={10} fill="none" stroke={dark?"#3a3020":"#c8a870"} strokeWidth={5}/>
+      {/* Window dividers */}
+      <line x1={322} y1={18} x2={322} y2={218} stroke={dark?"#3a3020":"#c8a870"} strokeWidth={4}/>
+      <line x1={245} y1={118} x2={400} y2={118} stroke={dark?"#3a3020":"#c8a870"} strokeWidth={4}/>
+      {/* Window inner panes */}
+      <rect x={250} y={23} width={67} height={90} rx={3} fill={dark?"#1a2838":"#d8f0ff"} opacity={dark?0.4:0.7}/>
+      <rect x={327} y={23} width={68} height={90} rx={3} fill={dark?"#1a2838":"#e0f4ff"} opacity={dark?0.4:0.65}/>
+      <rect x={250} y={123} width={67} height={90} rx={3} fill={dark?"#1a2838":"#d0ecff"} opacity={dark?0.35:0.6}/>
+      <rect x={327} y={123} width={68} height={90} rx={3} fill={dark?"#1a2838":"#daf2ff"} opacity={dark?0.35:0.55}/>
+      {/* Light rays from window */}
+      <path d="M400 18 L420 0 L420 90 L400 218" fill={dark?"#2a2510":"#fff8e0"} opacity={dark?0.04:0.18}/>
+      <path d="M320 18 L380 0 L420 0 L420 30 L320 218" fill={dark?"#2a2510":"#fffbe8"} opacity={dark?0.03:0.12}/>
+
+      {/* ── POTTED PLANT — right window sill ── */}
+      {/* Pot */}
+      <path d="M356 208 Q346 208 343 218 L339 238 L381 238 L377 218 Q374 208 364 208Z" fill={dark?"#5a3a1a":"#c8855a"} opacity={0.9}/>
+      <rect x={340} y={205} width={28} height={6} rx={3} fill={dark?"#6a4a2a":"#d4956a"}/>
+      {/* Soil */}
+      <ellipse cx={354} cy={208} rx={14} ry={4} fill={dark?"#2a1a08":"#6b3d1e"} opacity={0.8}/>
+      {/* Stems */}
+      <path d="M354 208 Q348 180 340 160" stroke={dark?"#2a4a22":"#4a8a3a"} strokeWidth={2.5} strokeLinecap="round" fill="none"/>
+      <path d="M354 208 Q358 178 370 155" stroke={dark?"#2a4a22":"#4a8a3a"} strokeWidth={2.5} strokeLinecap="round" fill="none"/>
+      <path d="M354 208 Q354 185 354 165" stroke={dark?"#2a4a22":"#3a7a2a"} strokeWidth={2} strokeLinecap="round" fill="none"/>
+      {/* Leaves — lush monstera style */}
+      <path d="M340 160 Q328 148 332 134 Q344 128 352 140 Q356 134 352 124 Q362 120 366 132 Q370 126 376 132 Q378 144 366 150 Q354 156 340 160Z" fill={dark?"#2a5a28":"#5aaa48"} opacity={0.9}/>
+      <path d="M370 155 Q382 140 390 145 Q392 158 380 162 Q372 164 370 155Z" fill={dark?"#2a5a28":"#4a9a38"} opacity={0.85}/>
+      {/* Leaf veins */}
+      <path d="M344 154 Q340 142 346 134" stroke={dark?"#1a4a18":"#3a8a2a"} strokeWidth={0.8} fill="none" opacity={0.6}/>
+      <path d="M358 152 Q360 140 358 130" stroke={dark?"#1a4a18":"#3a8a2a"} strokeWidth={0.8} fill="none" opacity={0.6}/>
+
+      {/* ── LARGE POTTED PLANT — left corner ── */}
+      {/* Big pot */}
+      <path d="M22 310 Q12 310 10 325 L6 388 L76 388 L72 325 Q70 310 60 310Z" fill={dark?"#5a3018":"#b87040"} opacity={0.9}/>
+      <rect x={6} y={306} width={70} height={8} rx={4} fill={dark?"#6a4020":"#c88050"}/>
+      {/* Soil */}
+      <ellipse cx={41} cy={310} rx={35} ry={6} fill={dark?"#1a0e04":"#5a2e0e"} opacity={0.85}/>
+      {/* Main stems */}
+      <path d="M41 310 Q30 270 15 230" stroke={dark?"#2a5020":"#408030"} strokeWidth={4} strokeLinecap="round" fill="none"/>
+      <path d="M41 310 Q55 265 72 215" stroke={dark?"#2a5020":"#408030"} strokeWidth={4} strokeLinecap="round" fill="none"/>
+      <path d="M41 310 Q38 258 28 200" stroke={dark?"#2a5020":"#357025"} strokeWidth={3} strokeLinecap="round" fill="none"/>
+      <path d="M41 310 Q44 250 58 190" stroke={dark?"#2a5020":"#458030"} strokeWidth={3} strokeLinecap="round" fill="none"/>
+      {/* Large leaves */}
+      <path d="M15 230 Q-5 210 0 190 Q14 175 28 190 Q30 178 26 165 Q40 158 46 175 Q50 162 60 168 Q65 182 52 195 Q38 208 15 230Z" fill={dark?"#1e4a1a":"#50a040"} opacity={0.88}/>
+      <path d="M72 215 Q90 195 92 178 Q82 160 66 170 Q64 158 72 148 Q86 148 90 162 Q96 152 104 162 Q108 178 96 190 Q84 202 72 215Z" fill={dark?"#224e1e":"#5aaa44"} opacity={0.85}/>
+      <path d="M28 200 Q10 185 8 165 Q18 148 30 160 Q32 145 28 132 Q42 125 50 140 Q54 128 64 135 Q68 150 56 162 Q44 174 28 200Z" fill={dark?"#1e4a1a":"#48983a"} opacity={0.82}/>
+      <path d="M58 190 Q80 175 86 155 Q76 138 60 148 Q58 135 66 122 Q80 122 82 138 Q88 125 98 132 Q100 148 88 160 Q74 172 58 190Z" fill={dark?"#224e1e":"#54a83e"} opacity={0.80}/>
+
+      {/* ── EASEL — detailed wooden ── */}
+      {/* Left leg */}
+      <line x1={148} y1={88} x2={100} y2={340} stroke="url(#easelWood)" strokeWidth={9} strokeLinecap="round"/>
+      {/* Right leg */}
+      <line x1={208} y1={88} x2={248} y2={340} stroke="url(#easelWood)" strokeWidth={9} strokeLinecap="round"/>
+      {/* Back support leg */}
+      <line x1={180} y1={105} x2={172} y2={345} stroke="#9c6535" strokeWidth={6} strokeLinecap="round" opacity={0.55}/>
+      {/* Cross bar */}
+      <line x1={112} y1={265} x2={238} y2={265} stroke="#9c6535" strokeWidth={7} strokeLinecap="round"/>
+      {/* Top rail */}
+      <line x1={142} y1={94} x2={218} y2={94} stroke="#9c6535" strokeWidth={7} strokeLinecap="round"/>
+      {/* Canvas ledge */}
+      <rect x={138} y={258} width={88} height={10} rx={3} fill="#7a4e28" opacity={0.9}/>
+      {/* Easel feet shadows */}
+      <ellipse cx={100} cy={340} rx={8} ry={3} fill={shadow}/>
+      <ellipse cx={248} cy={340} rx={8} ry={3} fill={shadow}/>
+      <ellipse cx={172} cy={345} rx={6} ry={2.5} fill={shadow}/>
+
+      {/* ── CANVAS — large painting of blossoming tree ── */}
+      {/* Canvas outer frame */}
+      <rect x={136} y={92} width={92} height={168} rx={5} fill={dark?"#2a1e10":"#f5e8ce"} stroke="#7a4e28" strokeWidth={4}/>
+      {/* Canvas surface */}
+      <rect x={141} y={97} width={82} height={158} rx={3} fill={dark?"#1a1208":"#fffdf5"}/>
+      {/* Sky gradient on canvas */}
+      <rect x={141} y={97} width={82} height={75} rx={2} fill="#a8d4f0" opacity={dark?0.5:0.85}/>
+      <rect x={141} y={140} width={82} height={32} rx={0} fill="#c8eaff" opacity={dark?0.35:0.6}/>
+      {/* Ground */}
+      <path d="M141 172 Q160 165 182 168 Q200 165 223 170 L223 255 L141 255Z" fill={dark?"#1a3010":"#7abf55"} opacity={dark?0.7:0.85}/>
+      {/* Path on ground */}
+      <path d="M175 255 Q178 225 182 200" stroke={dark?"#2a4a18":"#c8a870"} strokeWidth={6} strokeLinecap="round" fill="none" opacity={0.7}/>
+      {/* Tree trunk */}
+      <rect x={177} y={150} width={8} height={52} rx={3} fill={dark?"#4a2a0a":"#6b3d1e"} opacity={0.95}/>
+      <path d="M177 175 Q168 170 162 165" stroke={dark?"#4a2a0a":"#6b3d1e"} strokeWidth={4} strokeLinecap="round" fill="none" opacity={0.8}/>
+      <path d="M185 168 Q194 162 200 156" stroke={dark?"#4a2a0a":"#6b3d1e"} strokeWidth={3.5} strokeLinecap="round" fill="none" opacity={0.8}/>
+      {/* Blossoms — pink cherry clusters */}
       {[
-        [22,120,"#FF6B6B",8],[15,190,"#FFD93D",6],[38,255,"#6BCB77",7],
-        [395,110,"#4D96FF",7],[405,195,"#FF6B6B",5],[385,280,"#FFD93D",8],
-        [195,12,"#C77DFF",6],[265,10,"#6BCB77",4],[140,412,"#4D96FF",5],
-        [408,330,"#C77DFF",6],[10,300,"#FF6B6B",4]
-      ].map(([x,y,c,r],i)=>(
-        <circle key={`sp${i}`} cx={x} cy={y} r={r} fill={c} opacity={dark?0.5:0.75}/>
+        [182,138,22,"#f4a0b8",0.9],[165,130,16,"#f8c0d0",0.85],[200,128,15,"#f0b0c8",0.8],
+        [175,120,13,"#f8c8d8",0.85],[192,118,12,"#f4a8c0",0.8],[182,112,14,"#fcd0e0",0.78],
+        [158,140,12,"#f8b8cc",0.75],[208,138,11,"#f0a8c0",0.75],[170,108,10,"#fcc8d8",0.7],
+        [197,106,10,"#f4b0c4",0.7],[162,150,10,"#f8c0d0",0.72],[204,148,9,"#f0b8cc",0.7]
+      ].map(([cx,cy,r,fill,op],i)=>(
+        <circle key={`bl${i}`} cx={cx} cy={cy} r={r} fill={fill} opacity={dark?op*0.5:op}/>
+      ))}
+      {/* Fallen petals on ground */}
+      {[[150,240,4],[160,248,3.5],[170,244,3],[195,250,4],[210,242,3.5]].map(([cx,cy,r],i)=>(
+        <ellipse key={`p${i}`} cx={cx} cy={cy} rx={r} ry={r*0.6} fill="#f8c0d0" opacity={dark?0.3:0.6} transform={`rotate(${i*25} ${cx} ${cy})`}/>
+      ))}
+      {/* Small house in background on canvas */}
+      <rect x={155} y={182} width={12} height={10} rx={1} fill={dark?"#304825":"#ff8060"} opacity={0.75}/>
+      <path d="M153 182 L161 174 L169 182Z" fill={dark?"#243818":"#e05040"} opacity={0.8}/>
+      {/* Canvas texture lines */}
+      {[100,120,140,160,180,200,220,240].map((y,i)=>(
+        <line key={`ct${i}`} x1={141} y1={y} x2={223} y2={y} stroke={dark?"#2a2010":"#d4c0a0"} strokeWidth={0.3} opacity={0.3}/>
       ))}
 
-      {/* ── EASEL (bold warm wood) ── */}
-      <line x1={118} y1={90} x2={75} y2={310} stroke="#8B5E3C" strokeWidth={8} strokeLinecap="round"/>
-      <line x1={180} y1={90} x2={218} y2={310} stroke="#8B5E3C" strokeWidth={8} strokeLinecap="round"/>
-      <line x1={148} y1={108} x2={148} y2={318} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.55}/>
-      <line x1={88} y1={272} x2={208} y2={272} stroke="#8B5E3C" strokeWidth={6} strokeLinecap="round"/>
-      <line x1={108} y1={98} x2={188} y2={98} stroke="#8B5E3C" strokeWidth={6} strokeLinecap="round"/>
-
-      {/* ── CANVAS ON EASEL — lively mini painting ── */}
-      <rect x={108} y={98} width={80} height={105} rx={4} fill={dark?"#1a1212":"#fffef8"} stroke="#8B5E3C" strokeWidth={3}/>
-      {/* Sky wash */}
-      <rect x={112} y={102} width={72} height={42} fill="#87CEEB" opacity={0.8} rx={2}/>
-      {/* Sunshine */}
-      <circle cx={174} cy={116} r={10} fill="#FFD93D" opacity={0.95}/>
-      {/* Rolling hills */}
-      <path d="M112 144 Q128 128 148 136 Q162 124 188 132 L188 203 L112 203Z" fill="#6BCB77" opacity={0.85}/>
-      {/* Farmhouse */}
-      <rect x={138} y={158} width={22} height={20} fill="#FF6B6B" opacity={0.8}/>
-      <path d="M135 158 L149 148 L163 158Z" fill="#C0392B" opacity={0.85}/>
-      {/* Tree */}
-      <rect x={118} y={172} width={3} height={18} fill="#8B5E3C" opacity={0.8}/>
-      <circle cx={119} cy={168} r={7} fill="#27AE60" opacity={0.85}/>
-
-      {/* ── ARTIST — bright colorful outfit ── */}
-      {/* Head */}
-      <ellipse cx={255} cy={122} rx={24} ry={26} fill="#FDBCB4" opacity={0.95}/>
-      {/* Hair — vivid bun */}
-      <path d="M232 114 Q230 92 238 80 Q246 72 255 71 Q264 72 272 80 Q280 92 278 114" fill="#8B4513" opacity={0.9}/>
-      <circle cx={255} cy={74} r={10} fill="#C0392B" opacity={0.8}/>
-      {/* Bun detail */}
-      <ellipse cx={255} cy={74} rx={10} ry={8} fill="#C0392B" opacity={0.85}/>
-      <circle cx={255} cy={70} r={4} fill="#FF6B6B" opacity={0.7}/>
-      {/* Face */}
-      <circle cx={248} cy={118} r={3} fill="#333" opacity={0.8}/>
-      <circle cx={262} cy={118} r={3} fill="#333" opacity={0.8}/>
-      <path d="M250 130 Q255 135 260 130" stroke="#E74C3C" strokeWidth={1.5} strokeLinecap="round" fill="none" opacity={0.8}/>
-      {/* Rosy cheeks */}
-      <circle cx={244} cy={126} r={5} fill="#FF6B6B" opacity={0.3}/>
-      <circle cx={266} cy={126} r={5} fill="#FF6B6B" opacity={0.3}/>
-      {/* Body — vivid mustard smock */}
-      <path d="M230 148 Q222 175 220 225 L290 225 Q288 175 280 148 Q270 140 255 140 Q240 140 230 148Z" fill="#FFD93D" opacity={0.9}/>
-      {/* Smock collar */}
-      <path d="M242 148 Q255 158 268 148" stroke="#F39C12" strokeWidth={2.5} strokeLinecap="round" fill="none"/>
-      {/* Paint splash pattern on smock */}
-      <circle cx={240} cy={170} r={5} fill="#FF6B6B" opacity={0.75}/>
-      <circle cx={260} cy={185} r={4} fill="#4D96FF" opacity={0.75}/>
-      <circle cx={248} cy={200} r={3.5} fill="#6BCB77" opacity={0.75}/>
-      <circle cx={270} cy={165} r={3} fill="#C77DFF" opacity={0.7}/>
-      {/* Right arm — holding brush high */}
-      <path d="M280 160 Q298 152 310 144" stroke="#FDBCB4" strokeWidth={8} strokeLinecap="round" fill="none"/>
-      {/* Brush */}
-      <rect x={303} y={128} width={5} height={36} rx={2.5} fill="#8B5E3C" transform="rotate(-30 305 146)"/>
-      <rect x={302} y={123} width={6} height={8} rx={2} fill="#C0392B" transform="rotate(-30 305 127)"/>
-      <ellipse cx={298} cy={119} rx={4} ry={8} fill="#FF6B6B" opacity={1} transform="rotate(-30 298 119)"/>
-      <circle cx={295} cy={114} r={4} fill="#FF6B6B" opacity={0.9}/>
-      {/* Left arm — holding palette */}
-      <path d="M230 162 Q212 168 202 180" stroke="#FDBCB4" strokeWidth={8} strokeLinecap="round" fill="none"/>
-      {/* Legs — cobalt trousers */}
-      <rect x={240} y={223} width={16} height={75} rx={7} fill="#4D96FF" opacity={0.85}/>
-      <rect x={258} y={223} width={16} height={75} rx={7} fill="#4D96FF" opacity={0.85}/>
-      {/* Shoes */}
-      <ellipse cx={248} cy={299} rx={13} ry={6} fill="#2C3E50" opacity={0.85}/>
-      <ellipse cx={266} cy={299} rx={13} ry={6} fill="#2C3E50" opacity={0.8}/>
-
-      {/* ── PAINT PALETTE (floating, vivid) ── */}
-      <ellipse cx={198} cy={188} rx={26} ry={20} fill={dark?"#1f1818":"#fffef8"} stroke="#8B5E3C" strokeWidth={2.5}/>
-      <ellipse cx={188} cy={176} rx={7} ry={9} fill={dark?"#111":"#f0ebe0"} stroke="#8B5E3C" strokeWidth={1.5}/>
-      <circle cx={208} cy={176} r={5.5} fill="#FF6B6B" opacity={0.95}/>
-      <circle cx={218} cy={186} r={5} fill="#FFD93D" opacity={0.95}/>
-      <circle cx={215} cy={199} r={5} fill="#6BCB77" opacity={0.95}/>
-      <circle cx={204} cy={205} r={4.5} fill="#4D96FF" opacity={0.95}/>
-      <circle cx={192} cy={202} r={4} fill="#C77DFF" opacity={0.95}/>
-
-      {/* ── SEATED STUDENT (right) ── */}
-      {/* Stool */}
-      <rect x={315} y={300} width={70} height={8} rx={4} fill="#8B5E3C" opacity={0.8}/>
-      <line x1={326} y1={308} x2={319} y2={368} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.7}/>
-      <line x1={374} y1={308} x2={381} y2={368} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.7}/>
-      {/* Sketchbook */}
-      <rect x={300} y={276} width={100} height={68} rx={8} fill={dark?"#1a1212":"#fffef8"} stroke="#8B5E3C" strokeWidth={2.5}/>
-      {/* Colorful watercolor on book */}
-      <rect x={306} y={282} width={88} height={56} rx={4} fill={dark?"#0e0c0c":"#f5f0e8"} opacity={0.95}/>
-      <ellipse cx={330} cy={300} rx={14} ry={10} fill="#FF6B6B" opacity={0.5}/>
-      <ellipse cx={355} cy={296} rx={12} ry={9} fill="#FFD93D" opacity={0.5}/>
-      <ellipse cx={368} cy={310} rx={10} ry={8} fill="#6BCB77" opacity={0.5}/>
-      <ellipse cx={342} cy={316} rx={10} ry={7} fill="#4D96FF" opacity={0.45}/>
-      {/* Sketch lines */}
-      {[[308,290,380,290],[308,298,370,298]].map(([x1,y1,x2,y2],i)=>(
-        <line key={`sl${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#8B5E3C" strokeWidth={0.7} opacity={0.25}/>
-      ))}
-      {/* Student head */}
-      <ellipse cx={350} cy={240} rx={22} ry={24} fill="#FDBCB4" opacity={0.95}/>
-      {/* Hair — coral bun */}
-      <path d="M328 232 Q326 210 334 198 Q342 190 350 189 Q358 190 366 198 Q374 210 372 232" fill="#2C3E50" opacity={0.9}/>
-      <path d="M327 230 Q322 222 328 216 Q333 222 328 230Z" fill="#2C3E50" opacity={0.7}/>
-      <path d="M372 230 Q377 222 372 216 Q367 222 372 230Z" fill="#2C3E50" opacity={0.7}/>
-      {/* Student face */}
-      <circle cx={343} cy={237} r={2.8} fill="#333" opacity={0.8}/>
-      <circle cx={357} cy={237} r={2.8} fill="#333" opacity={0.8}/>
-      <path d="M345 249 Q350 253 355 249" stroke="#E74C3C" strokeWidth={1.4} strokeLinecap="round" fill="none" opacity={0.7}/>
-      {/* Student body — purple sweatshirt */}
-      <path d="M328 264 Q322 285 320 300 L380 300 Q378 285 372 264 Q363 256 350 256 Q337 256 328 264Z" fill="#C77DFF" opacity={0.85}/>
-      {/* Right arm with pencil */}
-      <path d="M372 272 Q388 282 396 292" stroke="#FDBCB4" strokeWidth={7} strokeLinecap="round" fill="none"/>
-      <rect x={390} y={284} width={5} height={36} rx={2.5} fill="#FFD93D" opacity={0.9} transform="rotate(20 392 302)"/>
-      <path d="M384 278 L390 282 L388 290 L382 286Z" fill="#FF6B6B" opacity={0.9} transform="rotate(20 386 284)"/>
-      <path d="M382 277 L386 271 L390 277Z" fill="#333" opacity={0.8} transform="rotate(20 386 274)"/>
-      {/* Left arm */}
-      <path d="M328 272 Q312 282 304 292" stroke="#FDBCB4" strokeWidth={7} strokeLinecap="round" fill="none"/>
-      {/* Student legs */}
-      <path d="M330 300 Q325 322 318 346" stroke="#4D96FF" strokeWidth={12} strokeLinecap="round" fill="none" opacity={0.85}/>
-      <path d="M370 300 Q376 322 383 346" stroke="#4D96FF" strokeWidth={12} strokeLinecap="round" fill="none" opacity={0.8}/>
-      {/* Student shoes */}
-      <ellipse cx={315} cy={349} rx={13} ry={7} fill="#2C3E50" opacity={0.8}/>
-      <ellipse cx={385} cy={349} rx={13} ry={7} fill="#2C3E50" opacity={0.75}/>
-
-      {/* ── PAINT TUBES — rainbow scattered ── */}
-      <rect x={62} y={318} width={20} height={52} rx={6} fill="#FF6B6B" opacity={0.9}/>
-      <rect x={65} y={312} width={14} height={10} rx={3} fill="#C0392B"/>
-      <rect x={86} y={328} width={18} height={44} rx={6} fill="#FFD93D" opacity={0.9}/>
-      <rect x={89} y={322} width={12} height={9} rx={3} fill="#F39C12"/>
-      <rect x={38} y={335} width={18} height={40} rx={6} fill="#4D96FF" opacity={0.9}/>
-      <rect x={41} y={329} width={12} height={8} rx={3} fill="#2980B9"/>
-      <rect x={110} y={335} width={16} height={38} rx={6} fill="#6BCB77" opacity={0.9}/>
-      <rect x={113} y={329} width={10} height={8} rx={3} fill="#27AE60"/>
-
-      {/* ── BIG PAINT SPLASH — upper right ── */}
-      <circle cx={380} cy={62} r={28} fill="#FFD93D" opacity={dark?0.3:0.55}/>
-      <circle cx={378} cy={62} r={18} fill="#FF6B6B" opacity={dark?0.25:0.45}/>
-      {[[363,48,4],[390,45,3],[400,65,5],[385,80,3.5],[370,78,4],[358,65,3]].map(([x,y,r],i)=>(
-        <circle key={`ps${i}`} cx={x} cy={y} r={r} fill={["#FFD93D","#FF6B6B","#C77DFF"][i%3]} opacity={dark?0.4:0.7}/>
-      ))}
-
-      {/* ── COLOUR SWATCHES strip at bottom ── */}
-      {["#FF6B6B","#FFD93D","#6BCB77","#4D96FF","#C77DFF","#FF9F43"].map((col,i)=>(
-        <rect key={`sw${i}`} x={60 + i*50} y={395} width={40} height={16} rx={6} fill={col} opacity={dark?0.55:0.88}/>
-      ))}
-
-      {/* ── SPARKLE STARS — colorful ── */}
-      {[[48,48,"#FF6B6B"],[380,380,"#6BCB77"],[395,150,"#FFD93D"],[18,350,"#4D96FF"],[210,12,"#C77DFF"],[405,250,"#FF6B6B"]].map(([x,y,c],i)=>(
-        <g key={`st${i}`}>
-          <line x1={x} y1={y-7} x2={x} y2={y+7} stroke={c} strokeWidth={1.8}/>
-          <line x1={x-7} y1={y} x2={x+7} y2={y} stroke={c} strokeWidth={1.8}/>
-          <line x1={x-5} y1={y-5} x2={x+5} y2={y+5} stroke={c} strokeWidth={1}/>
-          <line x1={x+5} y1={y-5} x2={x-5} y2={y+5} stroke={c} strokeWidth={1}/>
+      {/* ── PAINT BRUSH JAR — foreground left ── */}
+      {/* Mug body */}
+      <path d="M52 318 Q48 320 48 360 L48 375 Q48 382 56 382 L88 382 Q96 382 96 375 L96 360 Q96 320 92 318Z" fill={dark?"#2a2018":"#ffffff"} stroke={dark?"#4a3828":"#d4c0a0"} strokeWidth={2}/>
+      {/* Mug handle */}
+      <path d="M96 335 Q112 335 112 352 Q112 368 96 368" stroke={dark?"#4a3828":"#d4c0a0"} strokeWidth={3} fill="none" strokeLinecap="round"/>
+      {/* Brushes in jar */}
+      {[
+        {x:58,c:"#8B5E3C",bc:"#FF6B6B",a:-8},
+        {x:64,c:"#7a4e28",bc:"#FFD93D",a:2},
+        {x:70,c:"#9c6535",bc:"#6BCB77",a:10},
+        {x:76,c:"#8B5E3C",bc:"#4D96FF",a:-3},
+        {x:82,c:"#7a4e28",bc:"#C77DFF",a:6},
+      ].map(({x,c,bc,a},i)=>(
+        <g key={`br${i}`} transform={`rotate(${a} ${x} 350)`}>
+          <rect x={x-1.5} y={260} width={3} height={62} rx={1.5} fill={c}/>
+          <rect x={x-2} y={256} width={4} height={7} rx={1} fill="#9a9a9a"/>
+          <ellipse cx={x} cy={256} rx={3} ry={8} fill={bc} opacity={0.9}/>
         </g>
       ))}
 
-      {/* Corner brackets — teal accent */}
-      <path d="M12 12 L40 12 L40 18 L18 18 L18 40 L12 40Z" fill="#408175" opacity={0.5}/>
-      <path d="M408 12 L380 12 L380 18 L402 18 L402 40 L408 40Z" fill="#408175" opacity={0.5}/>
-      <path d="M12 408 L12 380 L18 380 L18 402 L40 402 L40 408Z" fill="#408175" opacity={0.5}/>
-      <path d="M408 408 L408 380 L402 380 L402 402 L380 402 L380 408Z" fill="#408175" opacity={0.5}/>
+      {/* ── WATERCOLOR PALETTE — foreground right ── */}
+      {/* Palette body */}
+      <rect x={270} y={338} width={120} height={64} rx={10} fill={dark?"#2a2018":"#f8f0e8"} stroke={dark?"#4a3828":"#c8a870"} strokeWidth={2}/>
+      {/* Paint wells */}
+      {[
+        [283,350,"#FF6B6B"],[301,350,"#FF9F43"],[319,350,"#FFD93D"],[337,350,"#6BCB77"],
+        [355,350,"#4D96FF"],[373,350,"#C77DFF"],[391,350,"#FF6B6B"],
+        [283,368,"#2C3E50"],[301,368,"#F8C0D0"],[319,368,"#ffffff"],[337,368,"#8B5E3C"],
+        [355,368,"#E74C3C"],[373,368,"#27AE60"],[391,368,"#2980B9"],
+      ].map(([cx,cy,fill],i)=>(
+        <circle key={`pw${i}`} cx={cx} cy={cy} r={7} fill={fill} stroke={dark?"#3a2a18":"#d4c0a0"} strokeWidth={1} opacity={dark?0.7:0.9}/>
+      ))}
+      {/* Palette thumb hole */}
+      <ellipse cx={280} cy={390} rx={16} ry={9} fill={dark?"#1a1208":"#e8d8c0"} stroke={dark?"#4a3828":"#c8a870"} strokeWidth={1.5}/>
 
-      {/* Label */}
-      <text x={210} y={384} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={13} fontStyle="italic" fill="#408175" opacity={0.8}>where creativity comes alive</text>
+      {/* ── PAINT TUBES scattered ── */}
+      {[
+        {x:108,y:355,r:-15,w:14,h:50,col:"#FF6B6B",cap:"#C0392B"},
+        {x:126,y:360,r:8,w:12,h:44,col:"#FFD93D",cap:"#F39C12"},
+        {x:100,y:350,r:-28,w:12,h:46,col:"#4D96FF",cap:"#2980B9"},
+      ].map(({x,y,r,w,h,col,cap},i)=>(
+        <g key={`tb${i}`} transform={`rotate(${r} ${x} ${y})`}>
+          <rect x={x-w/2} y={y-h} width={w} height={h} rx={5} fill={col} opacity={0.88}/>
+          <rect x={x-w/2} y={y-h-8} width={w} height={10} rx={3} fill={cap}/>
+          <rect x={x-w/2+2} y={y-h+4} width={w-4} height={6} rx={2} fill="rgba(255,255,255,0.25)"/>
+        </g>
+      ))}
+
+      {/* ── DECORATIVE WALL ELEMENTS ── */}
+      {/* Framed mini artwork top-left */}
+      <rect x={18} y={28} width={62} height={50} rx={5} fill={dark?"#1a1208":"#f5e8ce"} stroke={dark?"#6a4a2a":"#c8a870"} strokeWidth={3}/>
+      <rect x={22} y={32} width={54} height={42} rx={2} fill={dark?"#0e0c08":"#fffdf5"}/>
+      {/* Mini watercolor in frame — abstract blooms */}
+      <ellipse cx={35} cy={48} rx={10} ry={8} fill="#FF6B6B" opacity={dark?0.5:0.7}/>
+      <ellipse cx={52} cy={43} rx={8} ry={7} fill="#C77DFF" opacity={dark?0.45:0.65}/>
+      <ellipse cx={65} cy={50} rx={7} ry={9} fill="#FFD93D" opacity={dark?0.45:0.65}/>
+      <ellipse cx={46} cy={56} rx={9} ry={6} fill="#4D96FF" opacity={dark?0.4:0.55}/>
+      {/* Shelf */}
+      <rect x={14} y={80} width={90} height={7} rx={3} fill={dark?"#4a3020":"#b8926a"} opacity={0.9}/>
+
+      {/* ── PAINT SPLASH ACCENT — top right ── */}
+      <circle cx={395} cy={42} r={22} fill={dark?"#4a3010":"#FFD93D"} opacity={dark?0.18:0.4}/>
+      <circle cx={393} cy={40} r={14} fill={dark?"#5a1a10":"#FF6B6B"} opacity={dark?0.15:0.35}/>
+      {[[378,28,4],[408,30,3],[415,50,5],[400,58,3],[382,55,3.5]].map(([x,y,r],i)=>(
+        <circle key={`sp2${i}`} cx={x} cy={y} r={r} fill={["#FFD93D","#FF6B6B","#C77DFF"][i%3]} opacity={dark?0.25:0.55}/>
+      ))}
+
+      {/* ── FLOOR REFLECTION ── */}
+      <ellipse cx={178} cy={348} rx={65} ry={12} fill={dark?"rgba(0,0,0,0.3)":"rgba(120,80,40,0.1)"}/>
+
+      {/* ── QUOTE ── */}
+      <text x={210} y={410} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={12} fontStyle="italic" fill={dark?"#408175":"#408175"} opacity={0.75}>where creativity blooms</text>
     </svg>
   );
 }
