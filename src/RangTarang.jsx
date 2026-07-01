@@ -1,3 +1,10 @@
+import g1 from './assets/gallery/g1.jpeg';
+import g2 from './assets/gallery/g2.jpeg';
+import g3 from './assets/gallery/g3.jpeg';
+import g4 from './assets/gallery/g4.jpeg';
+import g5 from './assets/gallery/g5.jpeg';
+import g6 from './assets/gallery/g6.jpeg';
+import g7 from './assets/gallery/g7.jpeg';
 import React, { useState, useEffect, useRef } from "react";
 import emailjs from "@emailjs/browser";
 
@@ -126,12 +133,13 @@ const COURSE_ART = [
 ];
 
 const GALLERY = [
-  { label: "Oil on Canvas", sub: "Still Life", painting: "stillLife" },
-  { label: "Pencil Sketch", sub: "Portrait", painting: "portrait" },
-  { label: "Watercolour", sub: "Landscape", painting: "landscape" },
-  { label: "Acrylic", sub: "Abstract", painting: "abstract" },
-  { label: "Sculpture", sub: "Clay Form", painting: "sculpture" },
-  { label: "Ink Art", sub: "Line Work", painting: "inkArt" },
+  { label:"Achievements", sub:"Awards", image:g1 },
+  { label:"Student Artwork", sub:"Painting", image:g2 },
+  { label:"Competition Winners", sub:"Certificates", image:g3 },
+  { label:"Pencil Portrait", sub:"Sketch", image:g4 },
+  { label:"Sculpture Work", sub:"Statue Painting", image:g5 },
+  { label:"Watercolour", sub:"Student Art", image:g6 },
+  { label:"Clay Sculpture", sub:"Craftsmanship", image:g7 },
 ];
 
 /* ─── HOOKS ─────────────────────────────────────────────────── */
@@ -1261,7 +1269,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
       <div style={{ position: 'relative', width: '100%', height: 'clamp(260px,40vw,460px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {slides.map(({ idx, pos }) => {
           const g = gallery[idx];
-          const PaintingComp = paintingMap[g.painting];
+          
           const { zIndex, opacity } = posStyles(pos);
           return (
             <div
@@ -1288,7 +1296,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
               }}
             >
               <div style={{ aspectRatio: '4/3', overflow: 'hidden', pointerEvents: 'none' }}>
-                <PaintingComp w={380} h={285} dark={dark}/>
+                <img src={g.image} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
               </div>
               <div style={{
                 padding: pos === 'center' ? '18px 20px' : '12px 14px',
