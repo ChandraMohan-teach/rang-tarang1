@@ -654,171 +654,184 @@ function HeroPainting({ dark }) {
 
 /* ─── HERO ILLUSTRATION — vibrant artist scene ───────────────── */
 function HeroIllustration({ dark }) {
-  const bg = dark ? "#0d0b0b" : "#fdf8f2";
-  const card = dark ? "#161414" : "#FDFCFA";
-  const bg2 = dark ? "#111010" : "#F4F1ED";
+  const bg = dark ? "#0d0b0b" : "#fff8f0";
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display:"block" }}>
-      {/* Background */}
+      {/* Warm bright background */}
       <rect width={420} height={420} fill={bg} rx={16}/>
 
-      {/* Vibrant background wash blobs */}
-      <ellipse cx={80} cy={80} rx={100} ry={80} fill="#B5B9F0" opacity={dark?0.07:0.22}/>
-      <ellipse cx={340} cy={350} rx={120} ry={90} fill="#408175" opacity={dark?0.06:0.15}/>
-      <ellipse cx={360} cy={60} rx={80} ry={60} fill="#2E4540" opacity={dark?0.08:0.12}/>
-      <ellipse cx={50} cy={360} rx={70} ry={55} fill="#B5B9F0" opacity={dark?0.05:0.13}/>
+      {/* BIG bold paint-wash blobs — full saturation */}
+      <ellipse cx={60} cy={70} rx={110} ry={90} fill="#FF6B6B" opacity={dark?0.18:0.28}/>
+      <ellipse cx={370} cy={80} rx={90} ry={75} fill="#FFD93D" opacity={dark?0.18:0.35}/>
+      <ellipse cx={350} cy={360} rx={120} ry={80} fill="#6BCB77" opacity={dark?0.15:0.30}/>
+      <ellipse cx={55} cy={360} rx={85} ry={65} fill="#4D96FF" opacity={dark?0.15:0.28}/>
+      <ellipse cx={210} cy={210} rx={80} ry={60} fill="#C77DFF" opacity={dark?0.10:0.18}/>
 
-      {/* Paint splatter background dots — bright & energetic */}
-      {[[30,140,7],[18,200,5],[42,260,6],[380,130,8],[395,200,5],[370,290,7],[200,30,6],[280,18,4],[150,408,5]].map(([x,y,r],i)=>(
-        <circle key={`splash${i}`} cx={x} cy={y} r={r} fill={["#408175","#B5B9F0","#2E4540"][i%3]} opacity={dark?0.35:0.55}/>
+      {/* Paint splatter dots — vivid rainbow */}
+      {[
+        [22,120,"#FF6B6B",8],[15,190,"#FFD93D",6],[38,255,"#6BCB77",7],
+        [395,110,"#4D96FF",7],[405,195,"#FF6B6B",5],[385,280,"#FFD93D",8],
+        [195,12,"#C77DFF",6],[265,10,"#6BCB77",4],[140,412,"#4D96FF",5],
+        [408,330,"#C77DFF",6],[10,300,"#FF6B6B",4]
+      ].map(([x,y,c,r],i)=>(
+        <circle key={`sp${i}`} cx={x} cy={y} r={r} fill={c} opacity={dark?0.5:0.75}/>
       ))}
 
-      {/* ── PERSON 1: Standing, painting at easel (left) ── */}
-      {/* Easel legs */}
-      <line x1={90} y1={160} x2={58} y2={310} stroke="#2E4540" strokeWidth={5} strokeLinecap="round"/>
-      <line x1={145} y1={160} x2={170} y2={310} stroke="#2E4540" strokeWidth={5} strokeLinecap="round"/>
-      <line x1={118} y1={175} x2={118} y2={318} stroke="#2E4540" strokeWidth={3.5} strokeLinecap="round" opacity={0.5}/>
-      <line x1={65} y1={280} x2={170} y2={280} stroke="#2E4540" strokeWidth={4} strokeLinecap="round"/>
-      <line x1={82} y1={168} x2={155} y2={168} stroke="#2E4540" strokeWidth={4} strokeLinecap="round"/>
-      {/* Canvas on easel */}
-      <rect x={84} y={168} width={68} height={90} rx={3} fill={card} stroke="#408175" strokeWidth={1.5}/>
-      {/* Mini painting on canvas */}
-      <rect x={88} y={172} width={60} height={82} fill={dark?"#0d0b0b":"#edf5f3"} rx={2}/>
-      <rect x={88} y={172} width={60} height={32} fill="#B5B9F0" opacity={dark?0.08:0.28} rx={2}/>
-      <circle cx={134} cy={185} r={8} fill="#B5B9F0" opacity={0.6}/>
-      <path d="M88 204 L104 188 L116 198 L126 182 L148 200 L148 254 L88 254Z" fill="#2E4540" opacity={0.5}/>
-      <path d="M88 218 Q118 210 148 220 L148 254 L88 254Z" fill="#408175" opacity={0.3}/>
-      {/* Artist person 1 body */}
-      {/* Head */}
-      <ellipse cx={130} cy={115} rx={18} ry={20} fill="#B5B9F0" opacity={0.35}/>
-      <ellipse cx={130} cy={115} rx={17} ry={19} stroke="#2E4540" strokeWidth={1.5} fill="none" opacity={0.7}/>
-      {/* Hair */}
-      <path d="M113 108 Q112 90 118 82 Q126 76 130 76 Q134 76 142 82 Q148 90 147 108" fill="#2E4540" opacity={0.8}/>
-      {/* Face features */}
-      <circle cx={125} cy={112} r={2.5} fill="#2E4540" opacity={0.7}/>
-      <circle cx={135} cy={112} r={2.5} fill="#2E4540" opacity={0.7}/>
-      <path d="M127 122 Q130 125 133 122" stroke="#2E4540" strokeWidth={1.2} strokeLinecap="round" fill="none" opacity={0.6}/>
-      {/* Body — shirt with colour splashes */}
-      <path d="M112 135 Q105 160 103 200 L157 200 Q155 160 148 135 Q140 128 130 128 Q120 128 112 135Z" fill="#408175" opacity={0.75}/>
-      {/* Paint spots on shirt */}
-      <circle cx={122} cy={155} r={4} fill="#B5B9F0" opacity={0.6}/>
-      <circle cx={137} cy={165} r={3} fill="#B5B9F0" opacity={0.5}/>
-      <circle cx={128} cy={175} r={2.5} fill="#2E4540" opacity={0.4}/>
-      {/* Right arm — holding brush toward canvas */}
-      <path d="M148 145 Q162 148 170 160 Q168 168 160 165 Q152 155 144 152Z" fill="#B5B9F0" opacity={0.3}/>
-      <path d="M148 145 Q162 148 170 160" stroke="#2E4540" strokeWidth={3} strokeLinecap="round" fill="none" opacity={0.55}/>
-      {/* Brush in hand */}
-      <rect x={165} y={154} width={4} height={28} rx={2} fill="#2E4540" transform="rotate(-30 167 168)"/>
-      <rect x={164} y={149} width={5} height={6} rx={1.5} fill="#408175" transform="rotate(-30 166 152)"/>
-      <ellipse cx={162} cy={146} rx={3} ry={6} fill="#B5B9F0" opacity={0.9} transform="rotate(-30 162 146)"/>
-      {/* Paint at brush tip */}
-      <circle cx={159} cy={141} r={3} fill="#408175" opacity={0.7}/>
-      {/* Left arm down */}
-      <path d="M112 148 Q98 165 95 180" stroke="#2E4540" strokeWidth={5} strokeLinecap="round" fill="none" opacity={0.6}/>
-      <circle cx={95} cy={183} r={6} fill="#B5B9F0" opacity={0.28}/>
-      {/* Legs */}
-      <rect x={118} y={198} width={12} height={65} rx={5} fill="#2E4540" opacity={0.7}/>
-      <rect x={132} y={198} width={12} height={65} rx={5} fill="#2E4540" opacity={0.6}/>
-      {/* Feet */}
-      <ellipse cx={124} cy={264} rx={10} ry={5} fill="#0B0909" opacity={0.5}/>
-      <ellipse cx={138} cy={264} rx={10} ry={5} fill="#0B0909" opacity={0.45}/>
+      {/* ── EASEL (bold warm wood) ── */}
+      <line x1={118} y1={90} x2={75} y2={310} stroke="#8B5E3C" strokeWidth={8} strokeLinecap="round"/>
+      <line x1={180} y1={90} x2={218} y2={310} stroke="#8B5E3C" strokeWidth={8} strokeLinecap="round"/>
+      <line x1={148} y1={108} x2={148} y2={318} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.55}/>
+      <line x1={88} y1={272} x2={208} y2={272} stroke="#8B5E3C" strokeWidth={6} strokeLinecap="round"/>
+      <line x1={108} y1={98} x2={188} y2={98} stroke="#8B5E3C" strokeWidth={6} strokeLinecap="round"/>
 
-      {/* ── PERSON 2: Seated, sketching (right) ── */}
-      {/* Chair/stool */}
-      <rect x={270} y={280} width={60} height={6} rx={3} fill="#2E4540" opacity={0.65}/>
-      <line x1={278} y1={286} x2={272} y2={340} stroke="#2E4540" strokeWidth={4} strokeLinecap="round" opacity={0.6}/>
-      <line x1={322} y1={286} x2={328} y2={340} stroke="#2E4540" strokeWidth={4} strokeLinecap="round" opacity={0.6}/>
-      {/* Sketchbook on lap */}
-      <rect x={255} y={260} width={90} height={60} rx={6} fill={card} stroke="#2E4540" strokeWidth={2}/>
-      <rect x={259} y={264} width={82} height={52} rx={4} fill={dark?"#0e0c0c":"#f8f4ee"} opacity={0.9}/>
-      {/* Sketch lines on book */}
-      {[[265,275,320,275],[265,282,310,282],[265,289,318,289],[265,296,305,296],[265,303,315,303],[272,310,308,310]].map(([x1,y1,x2,y2],i)=>(
-        <line key={`sk${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#2E4540" strokeWidth={0.8} opacity={0.35}/>
-      ))}
-      {/* Rough portrait sketch on book */}
-      <ellipse cx={296} cy={282} rx={14} ry={16} stroke="#2E4540" strokeWidth={1} fill="none" opacity={0.4}/>
-      <path d="M283 275 Q284 268 290 265 Q296 263 302 265 Q308 268 309 275" fill="#2E4540" opacity={0.3}/>
-      <circle cx={292} cy={279} r={2} fill="#2E4540" opacity={0.5}/>
-      <circle cx={300} cy={279} r={2} fill="#2E4540" opacity={0.5}/>
-      <path d="M293 287 Q296 290 299 287" stroke="#2E4540" strokeWidth={1} fill="none" opacity={0.4}/>
-      {/* Person 2 body */}
+      {/* ── CANVAS ON EASEL — lively mini painting ── */}
+      <rect x={108} y={98} width={80} height={105} rx={4} fill={dark?"#1a1212":"#fffef8"} stroke="#8B5E3C" strokeWidth={3}/>
+      {/* Sky wash */}
+      <rect x={112} y={102} width={72} height={42} fill="#87CEEB" opacity={0.8} rx={2}/>
+      {/* Sunshine */}
+      <circle cx={174} cy={116} r={10} fill="#FFD93D" opacity={0.95}/>
+      {/* Rolling hills */}
+      <path d="M112 144 Q128 128 148 136 Q162 124 188 132 L188 203 L112 203Z" fill="#6BCB77" opacity={0.85}/>
+      {/* Farmhouse */}
+      <rect x={138} y={158} width={22} height={20} fill="#FF6B6B" opacity={0.8}/>
+      <path d="M135 158 L149 148 L163 158Z" fill="#C0392B" opacity={0.85}/>
+      {/* Tree */}
+      <rect x={118} y={172} width={3} height={18} fill="#8B5E3C" opacity={0.8}/>
+      <circle cx={119} cy={168} r={7} fill="#27AE60" opacity={0.85}/>
+
+      {/* ── ARTIST — bright colorful outfit ── */}
       {/* Head */}
-      <ellipse cx={300} cy={218} rx={20} ry={22} fill="#B5B9F0" opacity={0.32}/>
-      <ellipse cx={300} cy={218} rx={19} ry={21} stroke="#2E4540" strokeWidth={1.5} fill="none" opacity={0.65}/>
-      {/* Hair — curly/wavy */}
-      <path d="M281 210 Q278 190 285 178 Q292 170 300 169 Q308 170 315 178 Q322 190 319 210" fill="#408175" opacity={0.7}/>
-      {/* Curly hair strands */}
-      <path d="M280 208 Q275 200 280 195 Q285 200 281 208Z" fill="#408175" opacity={0.5}/>
-      <path d="M320 208 Q325 200 320 195 Q315 200 319 208Z" fill="#408175" opacity={0.5}/>
+      <ellipse cx={255} cy={122} rx={24} ry={26} fill="#FDBCB4" opacity={0.95}/>
+      {/* Hair — vivid bun */}
+      <path d="M232 114 Q230 92 238 80 Q246 72 255 71 Q264 72 272 80 Q280 92 278 114" fill="#8B4513" opacity={0.9}/>
+      <circle cx={255} cy={74} r={10} fill="#C0392B" opacity={0.8}/>
+      {/* Bun detail */}
+      <ellipse cx={255} cy={74} rx={10} ry={8} fill="#C0392B" opacity={0.85}/>
+      <circle cx={255} cy={70} r={4} fill="#FF6B6B" opacity={0.7}/>
       {/* Face */}
-      <circle cx={293} cy={215} r={2.5} fill="#2E4540" opacity={0.7}/>
-      <circle cx={307} cy={215} r={2.5} fill="#2E4540" opacity={0.7}/>
-      <path d="M295 226 Q300 230 305 226" stroke="#2E4540" strokeWidth={1.2} strokeLinecap="round" fill="none" opacity={0.55}/>
-      {/* Ear detail */}
-      <path d="M280 218 Q275 216 275 222 Q275 228 280 226" stroke="#2E4540" strokeWidth={1} fill="none" opacity={0.4}/>
-      {/* Body — colourful top */}
-      <path d="M280 240 Q275 265 272 280 L328 280 Q325 265 320 240 Q312 232 300 232 Q288 232 280 240Z" fill="#B5B9F0" opacity={0.6}/>
-      {/* Bright neckline accent */}
-      <path d="M291 238 Q300 244 309 238" stroke="#408175" strokeWidth={2} strokeLinecap="round" fill="none" opacity={0.6}/>
-      {/* Left arm holding sketchbook edge */}
-      <path d="M274 252 Q260 262 257 272" stroke="#2E4540" strokeWidth={5} strokeLinecap="round" fill="none" opacity={0.55}/>
-      {/* Right arm holding pencil */}
-      <path d="M326 250 Q338 258 344 268" stroke="#2E4540" strokeWidth={5} strokeLinecap="round" fill="none" opacity={0.55}/>
-      {/* Pencil */}
-      <rect x={338} y={258} width={5} height={32} rx={2.5} fill="#B5B9F0" opacity={0.85} transform="rotate(25 340 274)"/>
-      <path d="M332 250 L338 254 L336 260 L330 256Z" fill="#408175" opacity={0.8} transform="rotate(25 334 255)"/>
-      <path d="M330 250 L334 244 L338 250Z" fill="#2E4540" opacity={0.7} transform="rotate(25 334 247)"/>
-      {/* Legs while seated */}
-      <path d="M280 280 Q275 300 270 320" stroke="#2E4540" strokeWidth={10} strokeLinecap="round" fill="none" opacity={0.55}/>
-      <path d="M316 280 Q322 300 328 320" stroke="#2E4540" strokeWidth={10} strokeLinecap="round" fill="none" opacity={0.5}/>
+      <circle cx={248} cy={118} r={3} fill="#333" opacity={0.8}/>
+      <circle cx={262} cy={118} r={3} fill="#333" opacity={0.8}/>
+      <path d="M250 130 Q255 135 260 130" stroke="#E74C3C" strokeWidth={1.5} strokeLinecap="round" fill="none" opacity={0.8}/>
+      {/* Rosy cheeks */}
+      <circle cx={244} cy={126} r={5} fill="#FF6B6B" opacity={0.3}/>
+      <circle cx={266} cy={126} r={5} fill="#FF6B6B" opacity={0.3}/>
+      {/* Body — vivid mustard smock */}
+      <path d="M230 148 Q222 175 220 225 L290 225 Q288 175 280 148 Q270 140 255 140 Q240 140 230 148Z" fill="#FFD93D" opacity={0.9}/>
+      {/* Smock collar */}
+      <path d="M242 148 Q255 158 268 148" stroke="#F39C12" strokeWidth={2.5} strokeLinecap="round" fill="none"/>
+      {/* Paint splash pattern on smock */}
+      <circle cx={240} cy={170} r={5} fill="#FF6B6B" opacity={0.75}/>
+      <circle cx={260} cy={185} r={4} fill="#4D96FF" opacity={0.75}/>
+      <circle cx={248} cy={200} r={3.5} fill="#6BCB77" opacity={0.75}/>
+      <circle cx={270} cy={165} r={3} fill="#C77DFF" opacity={0.7}/>
+      {/* Right arm — holding brush high */}
+      <path d="M280 160 Q298 152 310 144" stroke="#FDBCB4" strokeWidth={8} strokeLinecap="round" fill="none"/>
+      {/* Brush */}
+      <rect x={303} y={128} width={5} height={36} rx={2.5} fill="#8B5E3C" transform="rotate(-30 305 146)"/>
+      <rect x={302} y={123} width={6} height={8} rx={2} fill="#C0392B" transform="rotate(-30 305 127)"/>
+      <ellipse cx={298} cy={119} rx={4} ry={8} fill="#FF6B6B" opacity={1} transform="rotate(-30 298 119)"/>
+      <circle cx={295} cy={114} r={4} fill="#FF6B6B" opacity={0.9}/>
+      {/* Left arm — holding palette */}
+      <path d="M230 162 Q212 168 202 180" stroke="#FDBCB4" strokeWidth={8} strokeLinecap="round" fill="none"/>
+      {/* Legs — cobalt trousers */}
+      <rect x={240} y={223} width={16} height={75} rx={7} fill="#4D96FF" opacity={0.85}/>
+      <rect x={258} y={223} width={16} height={75} rx={7} fill="#4D96FF" opacity={0.85}/>
       {/* Shoes */}
-      <ellipse cx={267} cy={323} rx={12} ry={6} fill="#0B0909" opacity={0.4}/>
-      <ellipse cx={330} cy={323} rx={12} ry={6} fill="#0B0909" opacity={0.35}/>
+      <ellipse cx={248} cy={299} rx={13} ry={6} fill="#2C3E50" opacity={0.85}/>
+      <ellipse cx={266} cy={299} rx={13} ry={6} fill="#2C3E50" opacity={0.8}/>
 
-      {/* ── PAINT PALETTE floating nearby artist 1 ── */}
-      <ellipse cx={80} cy={235} rx={22} ry={16} fill={card} stroke="#2E4540" strokeWidth={1.5} opacity={0.9}/>
-      <ellipse cx={70} cy={228} rx={5} ry={7} fill={bg2} stroke="#2E4540" strokeWidth={1} opacity={0.8}/>
-      <circle cx={84} cy={227} r={4} fill="#408175" opacity={0.9}/>
-      <circle cx={93} cy={230} r={3.5} fill="#B5B9F0" opacity={0.9}/>
-      <circle cx={90} cy={240} r={3.5} fill="#2E4540" opacity={0.8}/>
-      <circle cx={80} cy={243} r={3} fill="#408175" opacity={0.6}/>
+      {/* ── PAINT PALETTE (floating, vivid) ── */}
+      <ellipse cx={198} cy={188} rx={26} ry={20} fill={dark?"#1f1818":"#fffef8"} stroke="#8B5E3C" strokeWidth={2.5}/>
+      <ellipse cx={188} cy={176} rx={7} ry={9} fill={dark?"#111":"#f0ebe0"} stroke="#8B5E3C" strokeWidth={1.5}/>
+      <circle cx={208} cy={176} r={5.5} fill="#FF6B6B" opacity={0.95}/>
+      <circle cx={218} cy={186} r={5} fill="#FFD93D" opacity={0.95}/>
+      <circle cx={215} cy={199} r={5} fill="#6BCB77" opacity={0.95}/>
+      <circle cx={204} cy={205} r={4.5} fill="#4D96FF" opacity={0.95}/>
+      <circle cx={192} cy={202} r={4} fill="#C77DFF" opacity={0.95}/>
 
-      {/* ── PAINT TUBES scattered ── */}
-      <rect x={50} y={300} width={18} height={45} rx={5} fill="#408175" opacity={0.8}/>
-      <rect x={53} y={295} width={12} height={8} rx={2.5} fill="#2E4540"/>
-      <rect x={72} y={308} width={16} height={38} rx={5} fill="#B5B9F0" opacity={0.85}/>
-      <rect x={75} y={303} width={10} height={7} rx={2} fill="#2E4540"/>
-      <rect x={30} y={312} width={16} height={35} rx={5} fill="#2E4540" opacity={0.75}/>
-      <rect x={33} y={307} width={10} height={7} rx={2} fill="#0B0909"/>
+      {/* ── SEATED STUDENT (right) ── */}
+      {/* Stool */}
+      <rect x={315} y={300} width={70} height={8} rx={4} fill="#8B5E3C" opacity={0.8}/>
+      <line x1={326} y1={308} x2={319} y2={368} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.7}/>
+      <line x1={374} y1={308} x2={381} y2={368} stroke="#8B5E3C" strokeWidth={5} strokeLinecap="round" opacity={0.7}/>
+      {/* Sketchbook */}
+      <rect x={300} y={276} width={100} height={68} rx={8} fill={dark?"#1a1212":"#fffef8"} stroke="#8B5E3C" strokeWidth={2.5}/>
+      {/* Colorful watercolor on book */}
+      <rect x={306} y={282} width={88} height={56} rx={4} fill={dark?"#0e0c0c":"#f5f0e8"} opacity={0.95}/>
+      <ellipse cx={330} cy={300} rx={14} ry={10} fill="#FF6B6B" opacity={0.5}/>
+      <ellipse cx={355} cy={296} rx={12} ry={9} fill="#FFD93D" opacity={0.5}/>
+      <ellipse cx={368} cy={310} rx={10} ry={8} fill="#6BCB77" opacity={0.5}/>
+      <ellipse cx={342} cy={316} rx={10} ry={7} fill="#4D96FF" opacity={0.45}/>
+      {/* Sketch lines */}
+      {[[308,290,380,290],[308,298,370,298]].map(([x1,y1,x2,y2],i)=>(
+        <line key={`sl${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#8B5E3C" strokeWidth={0.7} opacity={0.25}/>
+      ))}
+      {/* Student head */}
+      <ellipse cx={350} cy={240} rx={22} ry={24} fill="#FDBCB4" opacity={0.95}/>
+      {/* Hair — coral bun */}
+      <path d="M328 232 Q326 210 334 198 Q342 190 350 189 Q358 190 366 198 Q374 210 372 232" fill="#2C3E50" opacity={0.9}/>
+      <path d="M327 230 Q322 222 328 216 Q333 222 328 230Z" fill="#2C3E50" opacity={0.7}/>
+      <path d="M372 230 Q377 222 372 216 Q367 222 372 230Z" fill="#2C3E50" opacity={0.7}/>
+      {/* Student face */}
+      <circle cx={343} cy={237} r={2.8} fill="#333" opacity={0.8}/>
+      <circle cx={357} cy={237} r={2.8} fill="#333" opacity={0.8}/>
+      <path d="M345 249 Q350 253 355 249" stroke="#E74C3C" strokeWidth={1.4} strokeLinecap="round" fill="none" opacity={0.7}/>
+      {/* Student body — purple sweatshirt */}
+      <path d="M328 264 Q322 285 320 300 L380 300 Q378 285 372 264 Q363 256 350 256 Q337 256 328 264Z" fill="#C77DFF" opacity={0.85}/>
+      {/* Right arm with pencil */}
+      <path d="M372 272 Q388 282 396 292" stroke="#FDBCB4" strokeWidth={7} strokeLinecap="round" fill="none"/>
+      <rect x={390} y={284} width={5} height={36} rx={2.5} fill="#FFD93D" opacity={0.9} transform="rotate(20 392 302)"/>
+      <path d="M384 278 L390 282 L388 290 L382 286Z" fill="#FF6B6B" opacity={0.9} transform="rotate(20 386 284)"/>
+      <path d="M382 277 L386 271 L390 277Z" fill="#333" opacity={0.8} transform="rotate(20 386 274)"/>
+      {/* Left arm */}
+      <path d="M328 272 Q312 282 304 292" stroke="#FDBCB4" strokeWidth={7} strokeLinecap="round" fill="none"/>
+      {/* Student legs */}
+      <path d="M330 300 Q325 322 318 346" stroke="#4D96FF" strokeWidth={12} strokeLinecap="round" fill="none" opacity={0.85}/>
+      <path d="M370 300 Q376 322 383 346" stroke="#4D96FF" strokeWidth={12} strokeLinecap="round" fill="none" opacity={0.8}/>
+      {/* Student shoes */}
+      <ellipse cx={315} cy={349} rx={13} ry={7} fill="#2C3E50" opacity={0.8}/>
+      <ellipse cx={385} cy={349} rx={13} ry={7} fill="#2C3E50" opacity={0.75}/>
 
-      {/* ── INK SPLATTER ENERGY near top ── */}
-      {[[200,55,5],[215,42,3.5],[190,48,3],[230,60,4],[245,48,2.5],[205,68,2]].map(([x,y,r],i)=>(
-        <circle key={`ink${i}`} cx={x} cy={y} r={r} fill={["#408175","#B5B9F0","#2E4540"][i%3]} opacity={dark?0.4:0.65}/>
+      {/* ── PAINT TUBES — rainbow scattered ── */}
+      <rect x={62} y={318} width={20} height={52} rx={6} fill="#FF6B6B" opacity={0.9}/>
+      <rect x={65} y={312} width={14} height={10} rx={3} fill="#C0392B"/>
+      <rect x={86} y={328} width={18} height={44} rx={6} fill="#FFD93D" opacity={0.9}/>
+      <rect x={89} y={322} width={12} height={9} rx={3} fill="#F39C12"/>
+      <rect x={38} y={335} width={18} height={40} rx={6} fill="#4D96FF" opacity={0.9}/>
+      <rect x={41} y={329} width={12} height={8} rx={3} fill="#2980B9"/>
+      <rect x={110} y={335} width={16} height={38} rx={6} fill="#6BCB77" opacity={0.9}/>
+      <rect x={113} y={329} width={10} height={8} rx={3} fill="#27AE60"/>
+
+      {/* ── BIG PAINT SPLASH — upper right ── */}
+      <circle cx={380} cy={62} r={28} fill="#FFD93D" opacity={dark?0.3:0.55}/>
+      <circle cx={378} cy={62} r={18} fill="#FF6B6B" opacity={dark?0.25:0.45}/>
+      {[[363,48,4],[390,45,3],[400,65,5],[385,80,3.5],[370,78,4],[358,65,3]].map(([x,y,r],i)=>(
+        <circle key={`ps${i}`} cx={x} cy={y} r={r} fill={["#FFD93D","#FF6B6B","#C77DFF"][i%3]} opacity={dark?0.4:0.7}/>
       ))}
 
       {/* ── COLOUR SWATCHES strip at bottom ── */}
-      {["#408175","#B5B9F0","#2E4540","#0B0909","#6ab5a8","#d8daff"].map((col,i)=>(
-        <rect key={`sw${i}`} x={100 + i*36} y={388} width={28} height={18} rx={5} fill={col} opacity={dark?0.5:0.75}/>
+      {["#FF6B6B","#FFD93D","#6BCB77","#4D96FF","#C77DFF","#FF9F43"].map((col,i)=>(
+        <rect key={`sw${i}`} x={60 + i*50} y={395} width={40} height={16} rx={6} fill={col} opacity={dark?0.55:0.88}/>
       ))}
 
-      {/* ── FLOATING STAR sparkles ── */}
-      {[[55,55],[380,90],[390,340],[30,380],[210,15],[390,200]].map(([x,y],i)=>(
-        <g key={`star${i}`} opacity={dark?0.3:0.55}>
-          <line x1={x} y1={y-6} x2={x} y2={y+6} stroke="#B5B9F0" strokeWidth={1.2}/>
-          <line x1={x-6} y1={y} x2={x+6} y2={y} stroke="#B5B9F0" strokeWidth={1.2}/>
-          <line x1={x-4} y1={y-4} x2={x+4} y2={y+4} stroke="#B5B9F0" strokeWidth={0.7}/>
-          <line x1={x+4} y1={y-4} x2={x-4} y2={y+4} stroke="#B5B9F0" strokeWidth={0.7}/>
+      {/* ── SPARKLE STARS — colorful ── */}
+      {[[48,48,"#FF6B6B"],[380,380,"#6BCB77"],[395,150,"#FFD93D"],[18,350,"#4D96FF"],[210,12,"#C77DFF"],[405,250,"#FF6B6B"]].map(([x,y,c],i)=>(
+        <g key={`st${i}`}>
+          <line x1={x} y1={y-7} x2={x} y2={y+7} stroke={c} strokeWidth={1.8}/>
+          <line x1={x-7} y1={y} x2={x+7} y2={y} stroke={c} strokeWidth={1.8}/>
+          <line x1={x-5} y1={y-5} x2={x+5} y2={y+5} stroke={c} strokeWidth={1}/>
+          <line x1={x+5} y1={y-5} x2={x-5} y2={y+5} stroke={c} strokeWidth={1}/>
         </g>
       ))}
 
-      {/* Corner decorative brackets */}
-      <path d="M12 12 L36 12 L36 16 L16 16 L16 36 L12 36Z" fill="#408175" opacity={0.3}/>
-      <path d="M408 12 L384 12 L384 16 L404 16 L404 36 L408 36Z" fill="#408175" opacity={0.3}/>
-      <path d="M12 408 L12 384 L16 384 L16 404 L36 404 L36 408Z" fill="#408175" opacity={0.3}/>
-      <path d="M408 408 L408 384 L404 384 L404 404 L384 404 L384 408Z" fill="#408175" opacity={0.3}/>
+      {/* Corner brackets — teal accent */}
+      <path d="M12 12 L40 12 L40 18 L18 18 L18 40 L12 40Z" fill="#408175" opacity={0.5}/>
+      <path d="M408 12 L380 12 L380 18 L402 18 L402 40 L408 40Z" fill="#408175" opacity={0.5}/>
+      <path d="M12 408 L12 380 L18 380 L18 402 L40 402 L40 408Z" fill="#408175" opacity={0.5}/>
+      <path d="M408 408 L408 380 L402 380 L402 402 L380 402 L380 408Z" fill="#408175" opacity={0.5}/>
 
       {/* Label */}
-      <text x={210} y={376} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={12} fontStyle="italic" fill="#408175" opacity={0.65}>where creativity comes alive</text>
+      <text x={210} y={384} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={13} fontStyle="italic" fill="#408175" opacity={0.8}>where creativity comes alive</text>
     </svg>
   );
 }
@@ -885,120 +898,204 @@ const paintingMap = {
 
 /* ─── ILLUSTRATION: ARTIST AT EASEL ─────────────────────────── */
 function IllustrationArtist({ dark }) {
-  const ink = dark ? "#EEECf5" : "#0B0909";
-  const card = dark ? "#161414" : "#FDFCFA";
-  const bg2 = dark ? "#111010" : "#F4F1ED";
+  const bg = dark ? "#0d0b0b" : "#fff9f0";
+  const card = dark ? "#1a1212" : "#fffef8";
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 380" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display:"block" }}>
-      {/* background wash */}
-      <rect width={420} height={380} fill={bg2} rx={20}/>
-      <ellipse cx={210} cy={380} rx={200} ry={60} fill="#2E4540" opacity={0.08}/>
+      {/* Warm bright background */}
+      <rect width={420} height={380} fill={bg} rx={20}/>
 
-      {/* floating paint blobs – ambient */}
-      <circle cx={38} cy={55} r={22} fill="#B5B9F0" opacity={0.18}/>
-      <circle cx={390} cy={72} r={16} fill="#408175" opacity={0.16}/>
-      <circle cx={380} cy={310} r={28} fill="#2E4540" opacity={0.1}/>
-      <circle cx={30} cy={290} r={18} fill="#B5B9F0" opacity={0.12}/>
+      {/* Big color wash blobs */}
+      <ellipse cx={55} cy={60} rx={90} ry={70} fill="#FF6B6B" opacity={dark?0.15:0.22}/>
+      <ellipse cx={375} cy={55} rx={75} ry={60} fill="#FFD93D" opacity={dark?0.15:0.28}/>
+      <ellipse cx={370} cy={320} rx={85} ry={60} fill="#4D96FF" opacity={dark?0.12:0.22}/>
+      <ellipse cx={45} cy={320} rx={70} ry={55} fill="#6BCB77" opacity={dark?0.12:0.20}/>
 
-      {/* ── EASEL ── */}
-      {/* left leg */}
-      <line x1={155} y1={100} x2={105} y2={340} stroke="#2E4540" strokeWidth={7} strokeLinecap="round"/>
-      {/* right leg */}
-      <line x1={265} y1={100} x2={315} y2={340} stroke="#2E4540" strokeWidth={7} strokeLinecap="round"/>
-      {/* back support leg */}
-      <line x1={210} y1={120} x2={210} y2={345} stroke="#2E4540" strokeWidth={5} strokeLinecap="round" opacity={0.5}/>
-      {/* cross bar */}
-      <line x1={118} y1={270} x2={302} y2={270} stroke="#2E4540" strokeWidth={6} strokeLinecap="round"/>
-      {/* top bar */}
-      <line x1={148} y1={108} x2={272} y2={108} stroke="#2E4540" strokeWidth={6} strokeLinecap="round"/>
-      {/* feet spread */}
-      <line x1={105} y1={340} x2={95} y2={355} stroke="#2E4540" strokeWidth={5} strokeLinecap="round"/>
-      <line x1={315} y1={340} x2={325} y2={355} stroke="#2E4540" strokeWidth={5} strokeLinecap="round"/>
-
-      {/* ── CANVAS ON EASEL ── */}
-      <rect x={155} y={108} width={110} height={150} rx={4} fill={card} stroke="#2E4540" strokeWidth={2} opacity={0.9}/>
-      {/* canvas inner frame */}
-      <rect x={161} y={114} width={98} height={138} rx={2} fill={card} stroke="#408175" strokeWidth={0.8} opacity={0.4}/>
-      {/* painting on canvas – mini landscape */}
-      <rect x={162} y={115} width={96} height={136} fill={dark?"#0d0b0b":"#eaf0f0"} rx={2}/>
-      <rect x={162} y={115} width={96} height={60} fill="#B5B9F0" opacity={dark?0.07:0.22} rx={2}/>
-      {/* sun */}
-      <circle cx={238} cy={135} r={10} fill="#B5B9F0" opacity={0.55}/>
-      <circle cx={238} cy={135} r={6} fill="#B5B9F0" opacity={0.8}/>
-      {/* mountains */}
-      <path d="M162 175 L182 148 L200 162 L218 138 L236 158 L258 140 L258 175Z" fill="#2E4540" opacity={0.6}/>
-      {/* snow */}
-      <path d="M218 138 L212 150 L224 150Z" fill="#B5B9F0" opacity={0.7}/>
-      {/* ground / lake */}
-      <path d="M162 175 Q210 165 258 175 L258 251 L162 251Z" fill="#408175" opacity={0.25}/>
-      {/* ripple */}
-      <path d="M172 205 Q210 200 248 205" stroke="#B5B9F0" strokeWidth={0.7} fill="none" opacity={0.4}/>
-      <path d="M175 215 Q210 210 245 215" stroke="#B5B9F0" strokeWidth={0.5} fill="none" opacity={0.3}/>
-      {/* tree on canvas */}
-      <rect x={176} y={185} width={3} height={22} fill="#0B0909" opacity={0.6}/>
-      <path d="M177 185 L168 202 L186 202Z" fill="#2E4540" opacity={0.8}/>
-      <path d="M177 177 L169 192 L185 192Z" fill="#408175" opacity={0.7}/>
-      {/* artist signature line */}
-      <path d="M220 245 Q230 242 240 245" stroke="#408175" strokeWidth={1.2} strokeLinecap="round" fill="none" opacity={0.6}/>
-
-      {/* ── PALETTE ── */}
-      {/* palette body */}
-      <ellipse cx={90} cy={230} rx={52} ry={40} fill={card} stroke="#2E4540" strokeWidth={2}/>
-      <ellipse cx={90} cy={230} rx={52} ry={40} fill="#B5B9F0" opacity={0.06}/>
-      {/* thumb hole */}
-      <ellipse cx={75} cy={218} rx={9} ry={12} fill={bg2} stroke="#2E4540" strokeWidth={1.5}/>
-      {/* paint blobs on palette */}
-      <circle cx={110} cy={215} r={8} fill="#408175" opacity={0.85}/>
-      <circle cx={125} cy={230} r={7} fill="#2E4540" opacity={0.8}/>
-      <circle cx={112} cy={244} r={7} fill="#B5B9F0" opacity={0.85}/>
-      <circle cx={96} cy={252} r={6} fill="#408175" opacity={0.5}/>
-      <circle cx={82} cy={248} r={5} fill="#2E4540" opacity={0.4}/>
-      {/* highlight on palette */}
-      <ellipse cx={88} cy={220} rx={16} ry={8} fill="#fff" opacity={0.07}/>
-
-      {/* ── BRUSH ── */}
-      {/* handle */}
-      <rect x={128} y={178} width={6} height={52} rx={3} fill="#2E4540" transform="rotate(-30 131 204)"/>
-      {/* ferrule */}
-      <rect x={126} y={172} width={8} height={8} rx={2} fill="#408175" transform="rotate(-30 130 176)"/>
-      {/* bristles */}
-      <ellipse cx={121} cy={166} rx={5} ry={9} fill="#B5B9F0" opacity={0.9} transform="rotate(-30 121 166)"/>
-      <ellipse cx={121} cy={166} rx={3} ry={6} fill="#408175" opacity={0.6} transform="rotate(-30 121 166)"/>
-      {/* paint drip from brush */}
-      <path d="M116 160 Q112 170 114 178" stroke="#408175" strokeWidth={2} strokeLinecap="round" fill="none" opacity={0.5}/>
-
-      {/* ── SECOND BRUSH ── */}
-      <rect x={318} y={195} width={5} height={60} rx={2.5} fill="#2E4540" transform="rotate(20 320 225)"/>
-      <rect x={317} y={190} width={7} height={7} rx={2} fill="#408175" transform="rotate(20 320 193)"/>
-      <ellipse cx={323} cy={185} rx={4} ry={8} fill="#2E4540" opacity={0.7} transform="rotate(20 323 185)"/>
-
-      {/* ── PAINT TUBES ── */}
-      {/* tube 1 - teal */}
-      <rect x={316} y={290} width={22} height={52} rx={6} fill="#408175" opacity={0.85}/>
-      <rect x={320} y={284} width={14} height={10} rx={3} fill="#2E4540"/>
-      <circle cx={327} cy={342} r={4} fill="#2E4540" opacity={0.6}/>
-      {/* tube 2 - lavender */}
-      <rect x={342} y={295} width={20} height={48} rx={6} fill="#B5B9F0" opacity={0.85}/>
-      <rect x={346} y={289} width={12} height={9} rx={3} fill="#2E4540"/>
-      <circle cx={352} cy={343} r={3.5} fill="#2E4540" opacity={0.5}/>
-      {/* tube 3 - forest */}
-      <rect x={365} y={298} width={20} height={44} rx={6} fill="#2E4540" opacity={0.8}/>
-      <rect x={369} y={293} width={12} height={9} rx={3} fill="#0B0909"/>
-
-      {/* ── PAINT SPLATTER ACCENT ── */}
-      {[[55,160,3],[42,170,2],[60,180,2.5],[48,182,2],[35,165,1.5]].map(([x,y,r],i)=>(
-        <circle key={i} cx={x} cy={y} r={r} fill="#408175" opacity={0.35}/>
-      ))}
-      {[[370,168,2.5],[360,178,2],[378,182,1.8]].map(([x,y,r],i)=>(
-        <circle key={`b${i}`} cx={x} cy={y} r={r} fill="#B5B9F0" opacity={0.4}/>
+      {/* Paint splash dots */}
+      {[
+        [18,130,"#FF6B6B",5],[10,185,"#FFD93D",4],[30,240,"#6BCB77",5],
+        [402,120,"#4D96FF",6],[410,200,"#C77DFF",4],[395,270,"#FF9F43",5],
+        [185,8,"#C77DFF",4],[265,5,"#FF6B6B",3]
+      ].map(([x,y,c,r],i)=>(
+        <circle key={`sp${i}`} cx={x} cy={y} r={r} fill={c} opacity={dark?0.45:0.7}/>
       ))}
 
-      {/* ── STARS / DECO ── */}
-      <path d="M52 80 L54 86 L60 86 L55 90 L57 96 L52 92 L47 96 L49 90 L44 86 L50 86Z" fill="#B5B9F0" opacity={0.35}/>
-      <path d="M368 50 L370 55 L375 55 L371 58 L373 63 L368 60 L363 63 L365 58 L361 55 L366 55Z" fill="#408175" opacity={0.4}/>
+      {/* ── LARGE EASEL (warm wood) ── */}
+      <line x1={155} y1={95} x2={105} y2={345} stroke="#8B5E3C" strokeWidth={9} strokeLinecap="round"/>
+      <line x1={265} y1={95} x2={315} y2={345} stroke="#8B5E3C" strokeWidth={9} strokeLinecap="round"/>
+      <line x1={210} y1={115} x2={210} y2={350} stroke="#8B5E3C" strokeWidth={6} strokeLinecap="round" opacity={0.5}/>
+      <line x1={118} y1={265} x2={302} y2={265} stroke="#8B5E3C" strokeWidth={7} strokeLinecap="round"/>
+      <line x1={148} y1={104} x2={272} y2={104} stroke="#8B5E3C" strokeWidth={7} strokeLinecap="round"/>
+      <line x1={105} y1={345} x2={92} y2={362} stroke="#8B5E3C" strokeWidth={7} strokeLinecap="round"/>
+      <line x1={315} y1={345} x2={328} y2={362} stroke="#8B5E3C" strokeWidth={7} strokeLinecap="round"/>
 
-      {/* ── LABEL AT BOTTOM ── */}
-      <text x={210} y={370} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={13} fontStyle="italic" fill="#408175" opacity={0.7}>where art comes alive</text>
+      {/* ── CANVAS — vivid landscape painting ── */}
+      <rect x={152} y={104} width={116} height={152} rx={6} fill={card} stroke="#8B5E3C" strokeWidth={4}/>
+      <rect x={158} y={110} width={104} height={140} rx={3} fill={dark?"#0d0b0b":"#fffef0"} opacity={0.95}/>
+      {/* Sky — vivid gradient-style */}
+      <rect x={159} y={111} width={102} height={55} fill="#87CEEB" opacity={0.85} rx={2}/>
+      <ellipse cx={238} cy={125} rx={18} ry={15} fill="#FFF9C4" opacity={0.5}/>
+      {/* Sun */}
+      <circle cx={245} cy={122} r={12} fill="#FFD93D" opacity={0.95}/>
+      <circle cx={245} cy={122} r={7} fill="#FF9F43" opacity={0.9}/>
+      {/* Sun rays */}
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={`ray${i}`} x1={245+Math.cos(a*Math.PI/180)*14} y1={122+Math.sin(a*Math.PI/180)*14} x2={245+Math.cos(a*Math.PI/180)*20} y2={122+Math.sin(a*Math.PI/180)*20} stroke="#FFD93D" strokeWidth={1.5} opacity={0.7}/>
+      ))}
+      {/* Rolling hills */}
+      <path d="M159 166 Q172 148 192 156 Q208 140 230 150 Q248 138 261 148 L261 166Z" fill="#6BCB77" opacity={0.85}/>
+      <path d="M159 166 Q175 155 195 162 Q212 150 232 158 Q248 145 261 155 L261 251 L159 251Z" fill="#4D7C2F" opacity={0.6}/>
+      {/* River */}
+      <path d="M180 200 Q205 192 230 200 Q215 240 192 248 Q175 240 180 200Z" fill="#4D96FF" opacity={0.6}/>
+      {/* Tree */}
+      <rect x={172} y={185} width={4} height={26} fill="#8B5E3C" opacity={0.9}/>
+      <circle cx={174} cy={180} r={10} fill="#27AE60" opacity={0.9}/>
+      <circle cx={174} cy={174} r={7} fill="#2ECC71" opacity={0.8}/>
+      {/* Farmhouse */}
+      <rect x={232} y={168} width={18} height={16} fill="#FF6B6B" opacity={0.85}/>
+      <path d="M229 168 L241 160 L253 168Z" fill="#C0392B" opacity={0.9}/>
+      {/* Artist signature */}
+      <path d="M220 244 Q230 241 242 244" stroke="#408175" strokeWidth={1.5} strokeLinecap="round" fill="none" opacity={0.7}/>
+
+      {/* ── PALETTE (big, colorful) ── */}
+      <ellipse cx={88} cy={228} rx={56} ry={44} fill={card} stroke="#8B5E3C" strokeWidth={3}/>
+      <ellipse cx={72} cy={214} rx={10} ry={14} fill={bg} stroke="#8B5E3C" strokeWidth={2}/>
+      <circle cx={112} cy={212} r={9.5} fill="#FF6B6B" opacity={0.95}/>
+      <circle cx={128} cy={228} r={8.5} fill="#FFD93D" opacity={0.95}/>
+      <circle cx={118} cy={246} r={8} fill="#6BCB77" opacity={0.95}/>
+      <circle cx={100} cy={256} r={7} fill="#4D96FF" opacity={0.95}/>
+      <circle cx={82} cy={252} r={6.5} fill="#C77DFF" opacity={0.95}/>
+      {/* Mixing smear */}
+      <path d="M105 222 Q118 228 124 240" stroke="#FF9F43" strokeWidth={5} strokeLinecap="round" fill="none" opacity={0.4}/>
+
+      {/* ── BRUSH 1 (held toward canvas) ── */}
+      <rect x={126} y={172} width={7} height={58} rx={3.5} fill="#8B5E3C" transform="rotate(-28 129 201)"/>
+      <rect x={124} y={165} width={9} height={10} rx={2.5} fill="#C0392B" transform="rotate(-28 128 170)"/>
+      <ellipse cx={119} cy={158} rx={5.5} ry={11} fill="#FF6B6B" opacity={1} transform="rotate(-28 119 158)"/>
+      <circle cx={115} cy={152} r={4.5} fill="#FFD93D" opacity={0.9}/>
+
+      {/* ── BRUSH 2 ── */}
+      <rect x={320} y={188} width={6} height={66} rx={3} fill="#8B5E3C" transform="rotate(22 323 221)"/>
+      <rect x={318} y={182} width={8} height={9} rx={2} fill="#27AE60" transform="rotate(22 322 186)"/>
+      <ellipse cx={325} cy={176} rx={4.5} ry={9} fill="#6BCB77" opacity={0.95} transform="rotate(22 325 176)"/>
+      <circle cx={328} cy={170} r={3.5} fill="#4D96FF" opacity={0.85}/>
+
+      {/* ── PAINT TUBES (rainbow) ── */}
+      <rect x={316} y={288} width={24} height={56} rx={7} fill="#FF6B6B" opacity={0.95}/>
+      <rect x={320} y={281} width={16} height={11} rx={3} fill="#C0392B"/>
+      <rect x={344} y={295} width={22} height={50} rx={7} fill="#FFD93D" opacity={0.95}/>
+      <rect x={348} y={288} width={14} height={10} rx={3} fill="#F39C12"/>
+      <rect x={370} y={300} width={22} height={46} rx={7} fill="#6BCB77" opacity={0.95}/>
+      <rect x={374} y={293} width={14} height={10} rx={3} fill="#27AE60"/>
+
+      {/* ── BIG SPLATTER clusters ── */}
+      {[[42,168,4],[28,178,3],[48,190,3.5],[35,194,2.5],[22,172,2]].map(([x,y,r],i)=>(
+        <circle key={`sa${i}`} cx={x} cy={y} r={r} fill={["#FF6B6B","#FFD93D","#4D96FF"][i%3]} opacity={dark?0.4:0.7}/>
+      ))}
+      {[[378,160,3.5],[366,172,2.5],[385,178,3],[371,185,2]].map(([x,y,r],i)=>(
+        <circle key={`sb${i}`} cx={x} cy={y} r={r} fill={["#C77DFF","#6BCB77","#FFD93D"][i%3]} opacity={dark?0.4:0.7}/>
+      ))}
+
+      {/* ── COLOR SWATCHES STRIP ── */}
+      {["#FF6B6B","#FF9F43","#FFD93D","#6BCB77","#4D96FF","#C77DFF"].map((c,i)=>(
+        <rect key={`csw${i}`} x={55+i*52} y={363} width={42} height={12} rx={5} fill={c} opacity={dark?0.5:0.85}/>
+      ))}
+
+      {/* Stars */}
+      {[[40,44,"#FFD93D"],[380,42,"#FF6B6B"],[380,340,"#6BCB77"],[40,340,"#4D96FF"]].map(([x,y,c],i)=>(
+        <g key={`star${i}`}>
+          <line x1={x} y1={y-7} x2={x} y2={y+7} stroke={c} strokeWidth={2}/>
+          <line x1={x-7} y1={y} x2={x+7} y2={y} stroke={c} strokeWidth={2}/>
+          <line x1={x-4} y1={y-4} x2={x+4} y2={y+4} stroke={c} strokeWidth={1.2}/>
+          <line x1={x+4} y1={y-4} x2={x-4} y2={y+4} stroke={c} strokeWidth={1.2}/>
+        </g>
+      ))}
+
+      {/* Label */}
+      <text x={210} y={358} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={13} fontStyle="italic" fill="#408175" opacity={0.85}>where art comes alive</text>
+    </svg>
+  );
+}
+
+/* ─── CONTACT ACCENT ILLUSTRATION — vibrant art supplies ──────── */
+function ContactAccentIllustration({ dark }) {
+  const bg = dark ? "#0d0b0b" : "#fff8f2";
+  return (
+    <svg width="100%" height="160" viewBox="0 0 380 160" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display:"block" }}>
+      {/* Background */}
+      <rect width={380} height={160} fill={bg} rx={16}/>
+
+      {/* Big paint wash blobs */}
+      <ellipse cx={50} cy={40} rx={80} ry={55} fill="#FF6B6B" opacity={dark?0.15:0.25}/>
+      <ellipse cx={330} cy={50} rx={70} ry={50} fill="#FFD93D" opacity={dark?0.15:0.28}/>
+      <ellipse cx={195} cy={130} rx={100} ry={45} fill="#4D96FF" opacity={dark?0.10:0.18}/>
+      <ellipse cx={310} cy={130} rx={60} ry={40} fill="#6BCB77" opacity={dark?0.10:0.18}/>
+
+      {/* ── BRUSH COLLECTION (left) ── */}
+      {/* brush 1 — red */}
+      <rect x={38} y={18} width={8} height={80} rx={4} fill="#8B5E3C" transform="rotate(8 42 58)"/>
+      <rect x={36} y={13} width={10} height={11} rx={3} fill="#C0392B" transform="rotate(8 41 18)"/>
+      <ellipse cx={35} cy={8} rx={6} ry={12} fill="#FF6B6B" opacity={1} transform="rotate(8 35 8)"/>
+      {/* brush 2 — yellow */}
+      <rect x={58} y={12} width={7} height={85} rx={3.5} fill="#8B5E3C" transform="rotate(-4 61 54)"/>
+      <rect x={56} y={7} width={9} height={10} rx={2.5} fill="#F39C12" transform="rotate(-4 60 12)"/>
+      <ellipse cx={57} cy={2} rx={5} ry={10} fill="#FFD93D" opacity={1} transform="rotate(-4 57 2)"/>
+      {/* brush 3 — blue */}
+      <rect x={78} y={20} width={7} height={78} rx={3.5} fill="#8B5E3C" transform="rotate(12 81 59)"/>
+      <rect x={76} y={14} width={9} height={10} rx={2.5} fill="#2980B9" transform="rotate(12 80 19)"/>
+      <ellipse cx={74} cy={8} rx={5} ry={10} fill="#4D96FF" opacity={1} transform="rotate(12 74 8)"/>
+      {/* brush 4 — purple */}
+      <rect x={98} y={15} width={7} height={82} rx={3.5} fill="#8B5E3C" transform="rotate(-6 101 56)"/>
+      <rect x={96} y={10} width={9} height={10} rx={2.5} fill="#8E44AD" transform="rotate(-6 100 15)"/>
+      <ellipse cx={97} cy={4} rx={5} ry={10} fill="#C77DFF" opacity={1} transform="rotate(-6 97 4)"/>
+      {/* brush 5 — green */}
+      <rect x={118} y={22} width={6} height={75} rx={3} fill="#8B5E3C" transform="rotate(15 121 59)"/>
+      <rect x={116} y={16} width={8} height={9} rx={2} fill="#27AE60" transform="rotate(15 120 20)"/>
+      <ellipse cx={114} cy={10} rx={4.5} ry={9} fill="#6BCB77" opacity={1} transform="rotate(15 114 10)"/>
+
+      {/* ── PAINT TUBES (center) ── */}
+      <rect x={155} y={38} width={26} height={68} rx={8} fill="#FF6B6B" opacity={0.95}/>
+      <rect x={160} y={30} width={16} height={12} rx={4} fill="#C0392B"/>
+      <ellipse cx={168} cy={108} rx={7} ry={4} fill="#C0392B" opacity={0.6}/>
+      <rect x={185} y={45} width={24} height={60} rx={8} fill="#6BCB77" opacity={0.95}/>
+      <rect x={190} y={37} width={14} height={11} rx={4} fill="#27AE60"/>
+      <ellipse cx={197} cy={107} rx={6} ry={3.5} fill="#27AE60" opacity={0.6}/>
+      <rect x={213} y={40} width={24} height={64} rx={8} fill="#4D96FF" opacity={0.95}/>
+      <rect x={218} y={32} width={14} height={11} rx={4} fill="#2980B9"/>
+      <ellipse cx={225} cy={106} rx={6} ry={3.5} fill="#2980B9" opacity={0.6}/>
+      <rect x={241} y={48} width={22} height={56} rx={8} fill="#FFD93D" opacity={0.95}/>
+      <rect x={246} y={40} width={12} height={10} rx={3} fill="#F39C12"/>
+      <rect x={267} y={44} width={22} height={60} rx={8} fill="#C77DFF" opacity={0.95}/>
+      <rect x={272} y={36} width={12} height={11} rx={3} fill="#8E44AD"/>
+
+      {/* ── PALETTE (right) ── */}
+      <ellipse cx={340} cy={85} rx={34} ry={55} fill={dark?"#1a1212":"#fffef0"} stroke="#8B5E3C" strokeWidth={3} transform="rotate(20 340 85)"/>
+      <ellipse cx={328} cy={64} rx={8} ry={11} fill={bg} stroke="#8B5E3C" strokeWidth={2} transform="rotate(20 328 64)"/>
+      <circle cx={348} cy={64} r={7} fill="#FF6B6B" opacity={0.95}/>
+      <circle cx={362} cy={78} r={6.5} fill="#FFD93D" opacity={0.95}/>
+      <circle cx={360} cy={95} r={6} fill="#6BCB77" opacity={0.95}/>
+      <circle cx={350} cy={108} r={5.5} fill="#4D96FF" opacity={0.95}/>
+      <circle cx={335} cy={112} r={5} fill="#C77DFF" opacity={0.95}/>
+
+      {/* ── PAINT SPLATTER DOTS ── */}
+      {[
+        [20,110,"#FF6B6B",4],[12,130,"#FFD93D",3],[28,142,"#6BCB77",3.5],
+        [360,140,"#4D96FF",4],[372,125,"#C77DFF",3],[365,150,"#FF9F43",3],
+        [140,125,"#FF6B6B",4],[148,142,"#FFD93D",3],[130,148,"#6BCB77",3]
+      ].map(([x,y,c,r],i)=>(
+        <circle key={`pd${i}`} cx={x} cy={y} r={r} fill={c} opacity={dark?0.5:0.8}/>
+      ))}
+
+      {/* Stars */}
+      {[[18,22,"#FFD93D"],[362,18,"#FF6B6B"],[18,148,"#6BCB77"],[362,148,"#4D96FF"]].map(([x,y,c],i)=>(
+        <g key={`cst${i}`}>
+          <line x1={x} y1={y-5} x2={x} y2={y+5} stroke={c} strokeWidth={1.5}/>
+          <line x1={x-5} y1={y} x2={x+5} y2={y} stroke={c} strokeWidth={1.5}/>
+        </g>
+      ))}
+
+      {/* Label */}
+      <text x={190} y={152} textAnchor="middle" fontFamily="'Playfair Display',serif" fontSize={11} fontStyle="italic" fill="#408175" opacity={0.75}>pick up a brush · start your journey</text>
     </svg>
   );
 }
@@ -1825,9 +1922,9 @@ export default function RangTarang() {
                 </div>
               ))}
             </div>
-            {/* mini ink art painting as accent */}
-            <div className="ink-accent" style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, opacity:.85, width:"100%" }}>
-              <PaintingInkArt w={380} h={160} dark={dark}/>
+            {/* colorful art supplies accent */}
+            <div className="ink-accent" style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, width:"100%" }}>
+              <ContactAccentIllustration dark={dark}/>
             </div>
             {/* Map card — opens Google Maps in new tab */}
             <a href="https://maps.app.goo.gl/CmSJ9dMaK9oam12D6" target="_blank" rel="noopener noreferrer"
