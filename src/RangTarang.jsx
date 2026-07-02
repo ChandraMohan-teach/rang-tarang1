@@ -1297,7 +1297,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
               }}
             >
               <div style={{ aspectRatio: '4/3', overflow: 'hidden', pointerEvents: 'none', background: dark ? '#1a1a1a' : '#f5f5f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={g.image} style={{width:"100%",height:"100%",objectFit:"contain"}}/>
+                <img src={g.image} alt={`${g.label} - ${g.sub} - Rang Tarang Fine Arts Academy Bhagalpur`} style={{width:"100%",height:"100%",objectFit:"contain"}}/>
               </div>
               <div style={{
                 padding: pos === 'center' ? '18px 20px' : '12px 14px',
