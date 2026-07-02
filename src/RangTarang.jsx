@@ -1296,8 +1296,8 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
                 if (pos === 'right') navigate('right');
               }}
             >
-              <div style={{ aspectRatio: '4/3', overflow: 'hidden', pointerEvents: 'none' }}>
-                <img src={g.image} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+              <div style={{ aspectRatio: '4/3', overflow: 'hidden', pointerEvents: 'none', background: dark ? '#1a1a1a' : '#f5f5f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={g.image} style={{width:"100%",height:"100%",objectFit:"contain"}}/>
               </div>
               <div style={{
                 padding: pos === 'center' ? '18px 20px' : '12px 14px',
