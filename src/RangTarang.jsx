@@ -662,16 +662,17 @@ function HeroPainting({ dark }) {
 
 /* ─── HERO ILLUSTRATION — sunlit studio with easel & painting ── */
 function HeroIllustration({ dark }) {
-  const bg1 = dark ? "#12100f" : "#fdf6ee";
-  const bg2 = dark ? "#1a1410" : "#fceedd";
-  const wall = dark ? "#1c1816" : "#f5ede0";
-  const floor = dark ? "#0f0d0b" : "#e8d5ba";
+  const bg1 = dark ? "#101513" : "#f4f7f5";
+  const bg2 = dark ? "#16201d" : "#e8f1ed";
+  const wall = dark ? "#17201e" : "#f3f1ed";
+  const floor = dark ? "#101412" : "#d8e4df";
   const shadow = dark ? "rgba(0,0,0,0.55)" : "rgba(120,80,40,0.13)";
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display:"block" }}>
       <defs>
         <radialGradient id="winGlow" cx="50%" cy="30%" r="60%">
-          <stop offset="0%" stopColor={dark?"#2a2010":"#fff8e8"} stopOpacity="1"/>
+          <stop offset="0%" stopColor={dark?"#263b35":"#ffffff"} stopOpacity="1"/>
+          <stop offset="58%" stopColor={dark?"#1d2d29":"#eef5f2"} stopOpacity="1"/>
           <stop offset="100%" stopColor={bg1} stopOpacity="1"/>
         </radialGradient>
         <radialGradient id="canvasGrad" cx="40%" cy="30%" r="70%">
@@ -679,8 +680,8 @@ function HeroIllustration({ dark }) {
           <stop offset="100%" stopColor="#b8d8f0" stopOpacity="0.7"/>
         </radialGradient>
         <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={dark?"#181410":"#dfc8a8"}/>
-          <stop offset="100%" stopColor={dark?"#0e0c09":"#c9ae88"}/>
+          <stop offset="0%" stopColor={dark?"#1a2421":"#dce8e3"}/>
+          <stop offset="100%" stopColor={dark?"#101513":"#c5d8d1"}/>
         </linearGradient>
         <linearGradient id="easelWood" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#7a4e28"/>
@@ -693,9 +694,9 @@ function HeroIllustration({ dark }) {
       </defs>
 
       {/* ── BACKGROUND — warm sunlit room ── */}
-      <rect width={420} height={420} fill="url(#winGlow)" rx={16}/>
+      <rect width={420} height={420} fill="url(#winGlow)" rx={34}/>
       {/* Wall */}
-      <rect x={0} y={0} width={420} height={290} fill={wall} opacity={0.6} rx={16}/>
+      <rect x={0} y={0} width={420} height={290} fill={wall} opacity={0.48} rx={34}/>
       {/* Floor */}
       <rect x={0} y={290} width={420} height={130} fill="url(#floorGrad)" rx={4}/>
       {/* Floor highlight strip */}
@@ -1687,11 +1688,11 @@ export default function RangTarang() {
           <FadeUp delay={80} className="hide-mob">
             <div style={{ position:"relative" }}>
               {/* main illustration frame */}
-              <div className="float-anim painting-glow" style={{ borderRadius:16, overflow:"hidden", width:"100%", aspectRatio:"1", background:C.card }}>
+              <div className="float-anim painting-glow" style={{ borderRadius:36, overflow:"hidden", width:"100%", aspectRatio:"1", background:"transparent", boxShadow:`0 28px 80px ${C.jade}22`, WebkitMaskImage:"radial-gradient(ellipse 96% 94% at 50% 48%, #000 70%, transparent 100%)", maskImage:"radial-gradient(ellipse 96% 94% at 50% 48%, #000 70%, transparent 100%)" }}>
                 <HeroIllustration dark={dark}/>
               </div>
-              {/* frame overlay */}
-              <div style={{ position:"absolute", inset:-2, borderRadius:18, border:`2px solid ${C.jade}22`, pointerEvents:"none"}}/>
+              {/* soft ambient edge glow blends the artwork into the hero */}
+              <div style={{ position:"absolute", inset:-18, borderRadius:46, background:`radial-gradient(ellipse at center, transparent 62%, ${C.jade}10 82%, transparent 100%)`, filter:"blur(12px)", pointerEvents:"none"}}/>
 
               {/* floating badge — Certified */}
               <div className="badge-pop" style={{ position:"absolute", top:20, left:-18, background:C.paper, borderRadius:14, padding:"10px 16px", boxShadow:`0 8px 32px rgba(0,0,0,.12)`, border:`1px solid ${C.border}` }}>
@@ -1867,7 +1868,7 @@ export default function RangTarang() {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:16, marginBottom:48 }}>
                 {COURSES.map((c, i) => {
                   const special = isSpecial(i);
-                  const cardBg = special?(activeCard===i?C.jadeLight:C.lavLight):(activeCard===i?C.jadeLight:C.card);
+                  const cardBg = activeCard===i ? C.jadeLight : C.card;
                   return (
                     <FadeUp key={c.name} delay={i*50}>
                       <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
