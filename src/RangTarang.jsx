@@ -1297,7 +1297,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
               }}
             >
               <div style={{ aspectRatio: '4/3', overflow: 'hidden', pointerEvents: 'none', background: dark ? '#1a1a1a' : '#f5f5f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={g.image} alt={`${g.label} - ${g.sub} - Rang Tarang Fine Arts Academy Bhagalpur`} style={{width:"100%",height:"100%",objectFit:"contain"}}/>
+                <img src={g.image} style={{width:"100%",height:"100%",objectFit:"contain"}}/>
               </div>
               <div style={{
                 padding: pos === 'center' ? '18px 20px' : '12px 14px',
@@ -2176,6 +2176,63 @@ export default function RangTarang() {
           </div>
         </div>
       </footer>
+
+      {/* ── WHATSAPP FLOATING BUTTON ── */}
+      <a
+        href="https://wa.me/919905030035?text=Hi%2C%20I%20am%20interested%20in%20joining%20Rang%20Tarang%20Classes.%20Please%20share%20more%20details."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with us on WhatsApp"
+        style={{
+          position: "fixed",
+          bottom: 28,
+          right: 28,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          background: "linear-gradient(135deg, #2E4540, #408175)",
+          borderRadius: 100,
+          padding: "12px 20px 12px 14px",
+          boxShadow: "0 4px 24px rgba(64,129,117,.45), 0 1px 6px rgba(0,0,0,.25)",
+          textDecoration: "none",
+          transition: "transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s",
+          cursor: "pointer",
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = "scale(1.07)";
+          e.currentTarget.style.boxShadow = "0 8px 32px rgba(64,129,117,.6), 0 2px 10px rgba(0,0,0,.3)";
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.boxShadow = "0 4px 24px rgba(64,129,117,.45), 0 1px 6px rgba(0,0,0,.25)";
+        }}
+      >
+        {/* WhatsApp SVG icon */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          width="26"
+          height="26"
+          style={{ flexShrink: 0 }}
+        >
+          <circle cx="16" cy="16" r="16" fill="#25D366"/>
+          <path
+            fill="#fff"
+            d="M23.5 8.5A10.45 10.45 0 0016 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.24L5.5 26.5l5.4-1.42A10.46 10.46 0 0016 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.09-5.44-3-7.5zm-7.5 16.15a8.68 8.68 0 01-4.43-1.22l-.32-.19-3.2.84.86-3.12-.21-.33A8.68 8.68 0 017.32 16C7.32 11.2 11.2 7.32 16 7.32S24.68 11.2 24.68 16 20.8 24.65 16 24.65zm4.77-6.5c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.66.85-.81 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.4-2.1-1.29-.78-.7-1.3-1.56-1.45-1.82-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.46.13-.16.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.91-.21-.5-.43-.43-.58-.44h-.5c-.17 0-.45.06-.69.32-.24.26-.91.89-.91 2.17s.93 2.52 1.06 2.69c.13.17 1.83 2.8 4.44 3.92.62.27 1.1.43 1.48.55.62.2 1.19.17 1.63.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.06-.11-.23-.17-.49-.3z"
+          />
+        </svg>
+        <span style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 14,
+          fontWeight: 700,
+          color: "#fff",
+          letterSpacing: ".3px",
+          whiteSpace: "nowrap",
+        }}>
+          Chat with us
+        </span>
+      </a>
     </div>
   );
 }
