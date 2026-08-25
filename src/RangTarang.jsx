@@ -1345,6 +1345,99 @@ export default function RangTarang() {
   const [form, setForm] = useState({ name: "", phone: "", course: ["Sketching"], mode: "In-studio", message: "" });
   const [statsRef, statsVis] = useReveal();
 
+  /* ── AI CHATBOT STATE ── */
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { role: "assistant", content: "Namaste! 🎨 I'm the Rang Tarang assistant. Ask me anything about our courses, fees, timings, or how to enroll!" }
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    if (chatOpen && chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages, chatOpen]);
+
+  const ACADEMY_SYSTEM_PROMPT = `You are a helpful assistant for Rang Tarang, a fine arts academy in Bhagalpur, Bihar, India. Answer questions warmly and concisely about the academy. Here is everything you know:
+
+ABOUT THE ACADEMY:
+- Name: Rang Tarang (meaning "Waves of Colour")
+- Location: Ramsar Chowk, Urdu Bazar, Bhagalpur, Bihar 812002, India
+- Phone: 9905030035
+- WhatsApp: 9905030035
+- Instructor: Chandra Mohan — Gold Medalist in Fine Arts (National level)
+- Experience: 25+ years of teaching
+- Students taught: 10,000+
+- Rating: 5 stars from students
+- Philosophy: "Every line you draw, builds your future."
+
+COURSES OFFERED:
+1. Sketching – Foundation course: pencil control, shading, portraiture & still life
+2. Painting – Composition, colour theory and brushwork (acrylic and mixed media)
+3. Water Colour – Wash techniques, wet-on-wet blending, building light through layers
+4. Oil Colour – Layering, glazing and texture for advanced students
+5. Sculpture – Clay modelling and basic relief work (3D thinking)
+6. NIFT Entrance Prep – Preparation for NIFT entrance exams: creative ability, observation & design thinking
+7. NID Entrance Prep – Comprehensive training for NID entrance — design aptitude, creativity, studio test
+8. Pearl / AIEED Prep – Preparation for Pearl Academy & AIEED — portfolio building, situational tests & design fundamentals
+9. BFA Preparation – Bachelor of Fine Arts entrance coaching covering all major Indian art colleges
+10. MFA Preparation – Master of Fine Arts entrance coaching with advanced portfolio development
+
+CLASS SCHEDULE:
+- Regular classes: Saturday and Sunday
+- Duration: 1.5 hours per session
+- Exact batch timings are shared after enrollment
+
+SPECIAL OFFERINGS:
+- Special Classes: Focused short-term sessions for specific techniques
+- Home Tuitions: One-on-one at the student's home
+- Online Classes: Live guided sessions from anywhere
+- Classes for all ages: kids, teens, and adults
+
+HOW TO ENROLL:
+- Fill the enrollment form on the website (bottom of the page)
+- Or call/WhatsApp: 9905030035
+- After submitting the form, the team will call back to confirm the batch
+
+Keep answers short (2-4 sentences), friendly, and in English. If asked about fees, say fees vary by course and the team will share details on a call — you don't have exact numbers. If asked something you don't know, suggest calling 9905030035.`;
+
+  const sendChatMessage = async () => {
+    const text = chatInput.trim();
+    if (!text || chatLoading) return;
+
+    const userMsg = { role: "user", content: text };
+    const updatedMessages = [...chatMessages, userMsg];
+    setChatMessages(updatedMessages);
+    setChatInput("");
+    setChatLoading(true);
+
+    try {
+      const apiMessages = updatedMessages
+        .filter(m => m.role !== "assistant" || updatedMessages.indexOf(m) > 0)
+        .map(m => ({ role: m.role, content: m.content }));
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 300,
+          system: ACADEMY_SYSTEM_PROMPT,
+          messages: apiMessages,
+        }),
+      });
+      const data = await response.json();
+      const reply = data.content?.[0]?.text || "Sorry, I couldn't get a response. Please call us at 9905030035!";
+      setChatMessages(prev => [...prev, { role: "assistant", content: reply }]);
+    } catch {
+      setChatMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Please call us at 9905030035 — we're happy to help!" }]);
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
   /* ── Send enrollment straight to your inbox, via EmailJS ─────────────
      Browsers can't send real email on their own — EmailJS is a small
      free service that lets a website email someone directly with no
@@ -1535,6 +1628,21 @@ export default function RangTarang() {
            turn squeezes/clips the enroll form sitting in the same grid. */
         .contact-grid > div{min-width:0}
         .ink-accent svg{width:100%!important;height:auto!important;display:block}
+        /* ── AI CHATBOT ── */
+        .chat-bubble-btn{transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
+        .chat-bubble-btn:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(64,129,117,.6)!important}
+        .chat-window{animation:chatSlideUp .32s cubic-bezier(.16,1,.3,1)}
+        @keyframes chatSlideUp{from{opacity:0;transform:translateY(24px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .chat-msg-user{animation:msgIn .22s cubic-bezier(.16,1,.3,1)}
+        .chat-msg-bot{animation:msgIn .22s cubic-bezier(.16,1,.3,1)}
+        @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .chat-send-btn:hover{opacity:.88;transform:scale(1.08)}
+        .chat-send-btn{transition:opacity .15s,transform .2s}
+        .chat-input:focus{outline:none}
+        .chat-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#408175;margin:0 2px;animation:dotBounce 1.2s ease-in-out infinite}
+        .chat-dots span:nth-child(2){animation-delay:.2s}
+        .chat-dots span:nth-child(3){animation-delay:.4s}
+        @keyframes dotBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
         /* ── RESPONSIVE ── */
         @media(max-width:768px){
           .hide-mob{display:none!important}
@@ -2176,6 +2284,151 @@ export default function RangTarang() {
           </div>
         </div>
       </footer>
+
+      {/* ── AI CHATBOT ── */}
+      <div style={{ position:"fixed", bottom:28, left:28, zIndex:9998, display:"flex", flexDirection:"column", alignItems:"flex-start", gap:12 }}>
+
+        {/* Chat window */}
+        {chatOpen && (
+          <div className="chat-window" style={{
+            width: "min(360px, calc(100vw - 56px))",
+            height: 480,
+            background: dark ? "#161414" : "#FDFCFA",
+            borderRadius: 24,
+            boxShadow: "0 24px 80px rgba(0,0,0,.22), 0 4px 16px rgba(0,0,0,.1)",
+            border: `1px solid ${dark ? "#2A2828" : "#DDD9D4"}`,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}>
+            {/* Header */}
+            <div style={{ background: "linear-gradient(135deg, #2E4540, #408175)", padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🎨</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 15, fontWeight: 700, color: "#fff" }}>Rang Tarang Assistant</div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,.7)", display: "flex", alignItems: "center", gap: 5, marginTop: 1 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#6BCB77", display: "inline-block" }}/>
+                  Online · Ask me anything
+                </div>
+              </div>
+              <button onClick={() => setChatOpen(false)} style={{ background: "rgba(255,255,255,.12)", border: "none", color: "#fff", width: 28, height: 28, borderRadius: "50%", fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background .2s", flexShrink: 0 }}
+                onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,.25)"}
+                onMouseLeave={e => e.currentTarget.style.background="rgba(255,255,255,.12)"}
+              >✕</button>
+            </div>
+
+            {/* FAQ quick chips */}
+            {chatMessages.length === 1 && (
+              <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 7, flexShrink: 0 }}>
+                {["What courses do you offer?", "What are the timings?", "Do you have online classes?", "How do I enroll?", "Who is the teacher?"].map(q => (
+                  <button key={q} onClick={() => { setChatInput(q); setTimeout(() => {
+                    const ev = { preventDefault: () => {} };
+                    setChatMessages(prev => {
+                      const userMsg = { role: "user", content: q };
+                      const updated = [...prev, userMsg];
+                      setChatLoading(true);
+                      fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          model: "claude-sonnet-4-6",
+                          max_tokens: 300,
+                          system: ACADEMY_SYSTEM_PROMPT,
+                          messages: updated.filter((_,i)=>i>0).map(m=>({role:m.role,content:m.content})),
+                        }),
+                      }).then(r=>r.json()).then(data => {
+                        const reply = data.content?.[0]?.text || "Please call us at 9905030035!";
+                        setChatMessages(p => [...p, { role:"assistant", content:reply }]);
+                      }).catch(()=>{
+                        setChatMessages(p => [...p, { role:"assistant", content:"Sorry, something went wrong. Please call us at 9905030035!" }]);
+                      }).finally(()=>setChatLoading(false));
+                      return updated;
+                    });
+                    setChatInput("");
+                  }, 0); }}
+                    style={{ padding: "5px 11px", borderRadius: 100, border: `1px solid ${dark?"#2A2828":"#DDD9D4"}`, background: dark?"#1e1c1c":"#f0ede8", color: dark?"#B5B9F0":"#408175", fontSize: 11, fontWeight: 500, cursor: "pointer", transition: "all .2s", whiteSpace: "nowrap" }}
+                    onMouseEnter={e=>{e.currentTarget.style.background=dark?"#2E4540":"#e0f0ec";e.currentTarget.style.borderColor="#408175"}}
+                    onMouseLeave={e=>{e.currentTarget.style.background=dark?"#1e1c1c":"#f0ede8";e.currentTarget.style.borderColor=dark?"#2A2828":"#DDD9D4"}}
+                  >{q}</button>
+                ))}
+              </div>
+            )}
+
+            {/* Messages */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={msg.role === "user" ? "chat-msg-user" : "chat-msg-bot"}
+                  style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
+                  {msg.role === "assistant" && (
+                    <div style={{ width: 26, height: 26, borderRadius: "50%", background: "linear-gradient(135deg,#2E4540,#408175)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, flexShrink:0, marginRight:8, marginTop:2 }}>🎨</div>
+                  )}
+                  <div style={{
+                    maxWidth: "78%",
+                    padding: "10px 14px",
+                    borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                    background: msg.role === "user"
+                      ? "linear-gradient(135deg,#2E4540,#408175)"
+                      : (dark ? "#1e1c1c" : "#F0EDE8"),
+                    color: msg.role === "user" ? "#fff" : (dark ? "#EEECf5" : "#0B0909"),
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                    boxShadow: "0 2px 8px rgba(0,0,0,.08)",
+                  }}>{msg.content}</div>
+                </div>
+              ))}
+              {chatLoading && (
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:26, height:26, borderRadius:"50%", background:"linear-gradient(135deg,#2E4540,#408175)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, flexShrink:0 }}>🎨</div>
+                  <div style={{ padding:"10px 14px", borderRadius:"18px 18px 18px 4px", background:dark?"#1e1c1c":"#F0EDE8" }}>
+                    <div className="chat-dots"><span/><span/><span/></div>
+                  </div>
+                </div>
+              )}
+              <div ref={chatEndRef}/>
+            </div>
+
+            {/* Input */}
+            <div style={{ padding: "12px 16px", borderTop: `1px solid ${dark?"#1E1C1C":"#E8E4E0"}`, display: "flex", gap: 10, alignItems: "center", flexShrink: 0, background: dark?"#111010":"#fff" }}>
+              <input
+                className="chat-input"
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendChatMessage()}
+                placeholder="Ask about courses, timings…"
+                style={{ flex:1, padding:"10px 14px", borderRadius:100, border:`1px solid ${dark?"#2A2828":"#DDD9D4"}`, background:dark?"#1e1c1c":"#F4F1ED", color:dark?"#EEECf5":"#0B0909", fontSize:13, fontFamily:"inherit" }}
+              />
+              <button className="chat-send-btn" onClick={sendChatMessage} disabled={chatLoading || !chatInput.trim()}
+                style={{ width:40, height:40, borderRadius:"50%", background:chatInput.trim()?"linear-gradient(135deg,#2E4540,#408175)":"#ccc", border:"none", color:"#fff", fontSize:17, cursor:chatInput.trim()?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                ↑
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Toggle button */}
+        <button
+          className="chat-bubble-btn"
+          onClick={() => setChatOpen(o => !o)}
+          aria-label="Open AI chat"
+          style={{
+            width: 58,
+            height: 58,
+            borderRadius: "50%",
+            background: chatOpen ? "#0B0909" : "linear-gradient(135deg, #2E4540, #408175)",
+            border: "none",
+            color: "#fff",
+            fontSize: 24,
+            cursor: "pointer",
+            boxShadow: "0 4px 24px rgba(64,129,117,.45), 0 1px 6px rgba(0,0,0,.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background .3s, transform .25s cubic-bezier(.34,1.56,.64,1)",
+          }}
+        >
+          {chatOpen ? "✕" : "✦"}
+        </button>
+      </div>
 
       {/* ── WHATSAPP FLOATING BUTTON ── */}
       <a
