@@ -1604,7 +1604,7 @@ export default function RangTarang() {
       </header>
 
       {/* ── HERO ── */}
-      <section id="home" style={{ position:"relative", maxWidth:1160, margin:"0 auto", padding:"100px 24px 80px", overflow:"hidden" }}>
+      <section id="home" style={{ position:"relative", maxWidth:1160, margin:"0 auto", padding:"100px 24px 100px", overflow:"hidden" }}>
         {/* Morphing ambient blobs */}
         <div className="morph-blob" style={{ position:"absolute", top:-80, right:-100, width:500, height:500, background:`radial-gradient(ellipse at 40% 40%, ${C.jade}12, ${C.forest}08, transparent 70%)`, pointerEvents:"none", zIndex:0 }}/>
         <div className="morph-blob" style={{ position:"absolute", bottom:-60, left:-80, width:380, height:380, background:`radial-gradient(ellipse at 60% 60%, ${C.lavender}0a, ${C.jade}06, transparent 70%)`, pointerEvents:"none", zIndex:0, animationDelay:"4s" }}/>
@@ -1646,7 +1646,7 @@ export default function RangTarang() {
           </div>
         </FadeUp>
 
-        <div className="hero-grid" style={{ display:"grid", gridTemplateColumns:"1.1fr 1fr", gap:64, alignItems:"center" }}>
+        <div className="hero-grid" style={{ display:"grid", gridTemplateColumns:"1.1fr 1fr", gap:80, alignItems:"center" }}>
           <div className="hero-text-col">
             <FadeUp delay={50}>
               <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(44px,6.5vw,82px)", fontWeight:900, lineHeight:1.02, letterSpacing:"-2.5px", color:C.ink }}>
@@ -1725,7 +1725,7 @@ export default function RangTarang() {
         {/* Stats strip */}
         <div ref={statsRef}>
           <FadeUp delay={280}>
-            <div style={{ marginTop:72, display:"flex", flexWrap:"wrap", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"28px 0" }}>
+            <div style={{ marginTop:88, display:"flex", flexWrap:"wrap", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"36px 0" }}>
               {[["6","+","courses offered"],["25","+","years experience"],["5","★","student rating"],["10000","+","students taught"]].map(([v,s,l],i) => (
                 <div key={l} style={{ flex:"1 1 120px", textAlign:"center", padding:"0 16px", borderLeft:i>0?`1px solid ${C.border}`:"none" }}>
                   <StatCard value={parseInt(v)} suffix={s} label={l} active={statsVis} C={C}/>
@@ -1738,7 +1738,7 @@ export default function RangTarang() {
       </section>
 
       {/* ── ABOUT ── */}
-      <section id="about" style={{ background:dark?"#0e0c0c":C.forest+"18", padding:"100px 24px", position:"relative", overflow:"hidden" }}>
+      <section id="about" style={{ background:dark?"#0e0c0c":C.forest+"18", padding:"120px 24px", position:"relative", overflow:"hidden" }}>
         {/* animated bg deco */}
         <div style={{ position:"absolute", top:40, right:60, opacity:.06 }}><DecoCircle size={240} color={C.lavender} opacity={1}/></div>
         <div style={{ position:"absolute", bottom:60, left:40 }} className="float-anim-slow"><DecoLeaf size={64} color={C.jade} opacity={.12}/></div>
@@ -1836,13 +1836,13 @@ export default function RangTarang() {
       </section>
 
       {/* ── CLASSES ── */}
-      <section id="classes" style={{ padding:"clamp(60px,8vw,100px) clamp(12px,4vw,24px)", position:"relative" }}>
+      <section id="classes" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
         <div style={{ position:"absolute", top:80, left:32 }} className="float-anim"><DecoLeaf size={32} color={C.lavender} opacity={.12}/></div>
         <div style={{ position:"absolute", bottom:100, right:40 }} className="float-anim-slow"><DecoBrush size={56} color={C.jade} opacity={.1}/></div>
 
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
           {/* Section header with palette illustration side by side */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:48, alignItems:"center", marginBottom:60 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:48, alignItems:"center", marginBottom:72 }}>
             <FadeUp>
               <div>
                 <p style={{ fontSize:11, fontWeight:600, letterSpacing:"2px", textTransform:"uppercase", color:C.jade, marginBottom:12 }}>Courses Offered</p>
@@ -1865,7 +1865,7 @@ export default function RangTarang() {
             const icons = ["✏️","🖌️","💧","🎨","🏺","🎓","🎯","💎","🖼️","🏆"];
             const isSpecial = (idx) => idx >= 5;
             return (
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:16, marginBottom:48 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:24, marginBottom:64 }}>
                 {COURSES.map((c, i) => {
                   const special = isSpecial(i);
                   const cardBg = activeCard===i ? C.jadeLight : C.card;
@@ -1895,7 +1895,7 @@ export default function RangTarang() {
             );
           })()}
 
-          <div className="two-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+          <div className="two-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
             <FadeUp>
               <div style={{ background:C.card, borderRadius:20, padding:"30px 26px", border:`1px solid ${C.border}` }}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:22 }}>
@@ -1935,13 +1935,13 @@ export default function RangTarang() {
       </section>
 
       {/* ── GALLERY ── */}
-      <section id="gallery" style={{ background:dark?"#0e0c0c":C.forest+"10", padding:"100px 24px", position:"relative" }}>
+      <section id="gallery" style={{ background:dark?"#0e0c0c":C.forest+"10", padding:"120px 24px", position:"relative" }}>
         <div style={{ position:"absolute", top:60, right:60, opacity:.08 }} className="spin-slow"><DecoCircle size={200} color={C.lavender} opacity={1}/></div>
         <div style={{ position:"absolute", bottom:80, left:40, opacity:.06 }} className="spin-rev"><DecoCircle size={140} color={C.jade} opacity={1}/></div>
 
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
           <FadeUp>
-            <div style={{ textAlign:"center", marginBottom:64 }}>
+            <div style={{ textAlign:"center", marginBottom:80 }}>
               <p style={{ fontSize:11, fontWeight:600, letterSpacing:"2px", textTransform:"uppercase", color:C.jade, marginBottom:12 }}>Student & Studio Work</p>
               <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,50px)", fontWeight:700, letterSpacing:"-1px", color:C.ink }}>Gallery</h2>
               <p style={{ fontSize:15, color:C.muted, marginTop:14, maxWidth:440, margin:"14px auto 0" }}>Works spanning every medium taught at Rang Tarang</p>
@@ -1953,11 +1953,11 @@ export default function RangTarang() {
       </section>
 
       {/* ── CONTACT ── */}
-      <section id="contact" style={{ padding:"clamp(60px,8vw,100px) clamp(12px,4vw,24px)", position:"relative" }}>
+      <section id="contact" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
         <div style={{ position:"absolute", bottom:80, left:40 }} className="float-anim"><DecoLeaf size={44} color={C.lavender} opacity={.1}/></div>
         <div style={{ position:"absolute", top:80, right:60 }} className="float-anim-med"><DecoStar size={20} color={C.jade} opacity={.2}/></div>
 
-        <div className="contact-grid" style={{ maxWidth:1160, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:64, alignItems:"start" }}>
+        <div className="contact-grid" style={{ maxWidth:1160, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:80, alignItems:"start" }}>
           <FadeUp>
             <p style={{ fontSize:11, fontWeight:600, letterSpacing:"2px", textTransform:"uppercase", color:C.jade, marginBottom:16 }}>Get In Touch</p>
             <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,48px)", fontWeight:700, letterSpacing:"-1px", color:C.ink, marginBottom:32 }}>Visit or call us</h2>
