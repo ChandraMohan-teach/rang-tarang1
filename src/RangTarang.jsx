@@ -1415,21 +1415,22 @@ Keep answers short (2-4 sentences), friendly, and in English. If asked about fee
 
     try {
       const apiMessages = updatedMessages
-        .filter(m => m.role !== "assistant" || updatedMessages.indexOf(m) > 0)
+        .filter((_, i) => i > 0)
         .map(m => ({ role: m.role, content: m.content }));
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 300,
-          system: ACADEMY_SYSTEM_PROMPT,
           messages: apiMessages,
+          systemPrompt: ACADEMY_SYSTEM_PROMPT,
         }),
       });
+
       const data = await response.json();
-      const reply = data.content?.[0]?.text || "Sorry, I couldn't get a response. Please call us at 9905030035!";
+      const reply = data.reply || "Sorry, I couldn't get a response. Please call us at 9905030035!";
       setChatMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setChatMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Please call us at 9905030035 — we're happy to help!" }]);
@@ -2321,31 +2322,30 @@ Keep answers short (2-4 sentences), friendly, and in English. If asked about fee
             {chatMessages.length === 1 && (
               <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 7, flexShrink: 0 }}>
                 {["What courses do you offer?", "What are the timings?", "Do you have online classes?", "How do I enroll?", "Who is the teacher?"].map(q => (
-                  <button key={q} onClick={() => { setChatInput(q); setTimeout(() => {
-                    const ev = { preventDefault: () => {} };
-                    setChatMessages(prev => {
-                      const userMsg = { role: "user", content: q };
-                      const updated = [...prev, userMsg];
-                      setChatLoading(true);
-                      fetch("https://api.anthropic.com/v1/messages", {
+                  <button key={q} onClick={async () => {
+                    if (chatLoading) return;
+                    const userMsg = { role: "user", content: q };
+                    const updatedMessages = [...chatMessages, userMsg];
+                    setChatMessages(updatedMessages);
+                    setChatLoading(true);
+                    try {
+                      const apiMessages = updatedMessages
+                        .filter((_, i) => i > 0)
+                        .map(m => ({ role: m.role, content: m.content }));
+                      const response = await fetch("/api/chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          model: "claude-sonnet-4-6",
-                          max_tokens: 300,
-                          system: ACADEMY_SYSTEM_PROMPT,
-                          messages: updated.filter((_,i)=>i>0).map(m=>({role:m.role,content:m.content})),
-                        }),
-                      }).then(r=>r.json()).then(data => {
-                        const reply = data.content?.[0]?.text || "Please call us at 9905030035!";
-                        setChatMessages(p => [...p, { role:"assistant", content:reply }]);
-                      }).catch(()=>{
-                        setChatMessages(p => [...p, { role:"assistant", content:"Sorry, something went wrong. Please call us at 9905030035!" }]);
-                      }).finally(()=>setChatLoading(false));
-                      return updated;
-                    });
-                    setChatInput("");
-                  }, 0); }}
+                        body: JSON.stringify({ messages: apiMessages, systemPrompt: ACADEMY_SYSTEM_PROMPT }),
+                      });
+                      const data = await response.json();
+                      const reply = data.reply || "Please call us at 9905030035!";
+                      setChatMessages(p => [...p, { role: "assistant", content: reply }]);
+                    } catch {
+                      setChatMessages(p => [...p, { role: "assistant", content: "Sorry, something went wrong. Please call us at 9905030035!" }]);
+                    } finally {
+                      setChatLoading(false);
+                    }
+                  }}
                     style={{ padding: "5px 11px", borderRadius: 100, border: `1px solid ${dark?"#2A2828":"#DDD9D4"}`, background: dark?"#1e1c1c":"#f0ede8", color: dark?"#B5B9F0":"#408175", fontSize: 11, fontWeight: 500, cursor: "pointer", transition: "all .2s", whiteSpace: "nowrap" }}
                     onMouseEnter={e=>{e.currentTarget.style.background=dark?"#2E4540":"#e0f0ec";e.currentTarget.style.borderColor="#408175"}}
                     onMouseLeave={e=>{e.currentTarget.style.background=dark?"#1e1c1c":"#f0ede8";e.currentTarget.style.borderColor=dark?"#2A2828":"#DDD9D4"}}
