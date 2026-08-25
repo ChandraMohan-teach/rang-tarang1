@@ -23,7 +23,7 @@ export default async function handler(req, res) {
             },
             ...messages,
           ],
-          max_tokens: 300,
+          max_tokens: 1000,
         }),
       }
     );
