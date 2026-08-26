@@ -1401,7 +1401,13 @@ HOW TO ENROLL:
 - Or call/WhatsApp: 9905030035
 - After submitting the form, the team will call back to confirm the batch
 
-Keep answers short (2-4 sentences), friendly, and in English. If asked about fees, say fees vary by course and the team will share details on a call — you don't have exact numbers. If asked something you don't know, suggest calling 9905030035.`;
+STRICT RULES — FOLLOW THESE EXACTLY:
+1. You ONLY answer questions about Rang Tarang academy — courses, fees, timings, enrollment, instructor, location, and contact.
+2. If someone asks ANYTHING unrelated (maths, coding, general knowledge, other topics, jokes, etc.), reply ONLY with: "I can only help with questions about Rang Tarang academy. For anything else, please use Google! 😊 Want to know about our courses or how to enroll?"
+3. Keep answers short — 2 to 4 sentences max.
+4. If asked about fees, say fees vary by course and the team will share details on a call.
+5. If you don't know something about the academy, suggest calling 9905030035.
+6. Never answer homework, solve equations, write code, or help with anything outside the academy.`;
 
   const sendChatMessage = async () => {
     const text = chatInput.trim();
