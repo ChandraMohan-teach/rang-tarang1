@@ -31,7 +31,7 @@ export default async function handler(req, res) {
             { role: "system", content: systemPrompt },
             ...messages,
           ],
-          max_tokens: 1000,
+          max_tokens: 2000,
         }),
       }
     );
