@@ -169,9 +169,14 @@ function useScrollProgress() {
       const p = Math.min(1, Math.max(0, (winH - rect.top) / (winH * 0.8)));
       setProgress(p);
     };
-    window.addEventListener("scroll", update, { passive: true });
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; update(); });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
     update();
-    return () => window.removeEventListener("scroll", update);
+    return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
   }, []);
   return [ref, progress];
 }
@@ -1219,6 +1224,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
   const [center, setCenter] = useState(0);
   const [animDir, setAnimDir] = useState(null); // 'left' | 'right'
   const [isAnimating, setIsAnimating] = useState(false);
+  const touchX = useRef(null);
 
   const getIdx = (offset) => (center + offset + n) % n;
 
@@ -1269,7 +1275,15 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       {/* Carousel viewport */}
-      <div style={{ position: 'relative', width: '100%', height: 'clamp(260px,40vw,460px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+      <div className="gal-viewport"
+        onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
+        onTouchEnd={e => {
+          if (touchX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          touchX.current = null;
+          if (Math.abs(dx) > 40) navigate(dx < 0 ? 'right' : 'left');
+        }}
+        style={{ position: 'relative', width: '100%', height: 'clamp(260px,40vw,460px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {slides.map(({ idx, pos }) => {
           const g = gallery[idx];
           
@@ -1277,6 +1291,7 @@ function GalleryCarousel({ gallery, paintingMap, dark, C }) {
           return (
             <div
               key={`${pos}-${idx}`}
+              className={pos === 'center' ? 'gal-slide gal-center' : 'gal-slide gal-side'}
               style={{
                 position: 'absolute',
                 width: 'clamp(200px,38%,380px)',
@@ -1503,10 +1518,12 @@ export default function RangTarang() {
   };
 
   const NAV = ["home", "about", "classes", "gallery", "contact"];
+  // Pale lavender is unreadable on the cream light theme — use a deeper shade there
+  const lavText = dark ? C.lavender : "#5A5FC2";
   const scrollTo = (id) => { setNavOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
 
   return (
-    <div style={{ background: C.bg, color: C.ink, fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ background: C.bg, color: C.ink, fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", overflowX: "hidden", "--jade": C.jade, "--bd": C.border }}>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400;1,700&display=swap');
@@ -1607,7 +1624,6 @@ export default function RangTarang() {
         @keyframes hintIn{from{opacity:0;transform:translateX(-10px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
         .chat-pulse{animation:chatPulse 2.4s ease-out infinite}
         @keyframes chatPulse{0%{box-shadow:0 0 0 0 rgba(64,129,117,.55)}70%{box-shadow:0 0 0 14px rgba(64,129,117,0)}100%{box-shadow:0 0 0 0 rgba(64,129,117,0)}}
-        @media(max-width:480px){.chat-hint{font-size:12px!important;white-space:normal!important;width:170px}}
         .chat-bubble-btn{transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
         .chat-bubble-btn:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(64,129,117,.6)!important}
         .chat-window{animation:chatSlideUp .32s cubic-bezier(.16,1,.3,1)}
@@ -1622,7 +1638,103 @@ export default function RangTarang() {
         .chat-dots span:nth-child(2){animation-delay:.2s}
         .chat-dots span:nth-child(3){animation-delay:.4s}
         @keyframes dotBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+        /* ── TOUCH DEVICES: no sticky hover-lift on tap ── */
+        @media(hover:none){
+          .card-lift:hover,.gallery-card:hover{transform:none!important;box-shadow:none!important;filter:none!important}
+          .pill:hover{transform:none!important;opacity:1!important}
+          .chat-bubble-btn:hover{transform:none!important}
+        }
+        @media(prefers-reduced-motion:reduce){
+          *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+        }
         /* ── RESPONSIVE ── */
+        @media(max-width:768px){
+          html{scroll-padding-top:68px;-webkit-text-size-adjust:100%}
+          body{-webkit-tap-highlight-color:transparent}
+          button,a,label{touch-action:manipulation}
+          /* 16px inputs stop iOS Safari zooming the page on focus */
+          input,select,textarea{font-size:16px!important}
+
+          /* ── HEADER ── */
+          .site-header-inner{padding:0 16px!important;height:60px!important}
+          .theme-btn{width:40px!important;height:40px!important}
+          .menu-btn{display:flex!important;align-items:center;justify-content:center;width:44px!important;height:44px!important;font-size:24px!important;padding:0!important}
+          .mnav a{padding:14px 0!important}
+          .mnav button{width:100%!important;padding:14px 22px!important;font-size:14px!important}
+
+          /* ── HERO ── */
+          .hero-section{padding:20px 20px 40px!important}
+          .ticker-wrap{padding:6px 0!important;margin-bottom:12px!important}
+          .ticker-wrap span{font-size:11px!important;letter-spacing:1px!important;padding:0 20px!important}
+          .hero-pill{margin-bottom:20px!important;padding:7px 14px!important;max-width:100%}
+          .hero-pill span:first-child{display:none!important}
+          .hero-pill span:last-child{font-size:11px!important;letter-spacing:.6px!important;line-height:1.4;text-align:center;text-wrap:balance}
+          .hero-grid{gap:0!important}
+          .hero-h1{font-size:clamp(36px,11.5vw,54px)!important;letter-spacing:-1.5px!important;line-height:1.05!important}
+          .hero-sub{font-size:15px!important;line-height:1.7!important;margin-top:16px!important}
+          .hero-sub-2{font-size:13px!important;line-height:1.7!important;margin-top:18px!important;opacity:.85}
+          .hero-btns{flex-direction:column!important;align-items:stretch!important;gap:6px!important;margin-top:24px!important}
+          .hero-btns button{width:100%!important}
+          .hero-btns .hero-btn-1{padding:15px 20px!important;font-size:15px!important}
+          .hero-btns .hero-btn-2{border-color:transparent!important;background:none!important;color:var(--jade)!important;padding:11px 20px!important;font-size:14px!important;font-weight:500!important}
+          .hero-quote{font-size:14px!important;margin-top:16px!important}
+          .stats-strip{display:grid!important;grid-template-columns:1fr 1fr!important;margin-top:32px!important;padding:0!important}
+          .stat-item{padding:20px 8px!important;border-left:none!important}
+          .stat-item:nth-child(even){border-left:1px solid var(--bd)!important}
+          .stat-item:nth-child(n+3){border-top:1px solid var(--bd)!important}
+
+          /* ── ABOUT ── */
+          .sec-about{padding:56px 20px!important}
+          .about-card{padding:28px 20px!important}
+          .two-col{gap:28px!important}
+
+          /* ── CLASSES ── */
+          .sec-classes{padding:56px 16px!important}
+          .classes-head{grid-template-columns:1fr!important;gap:0!important;margin-bottom:24px!important}
+          .courses-grid{grid-template-columns:1fr!important;gap:12px!important;margin-bottom:36px!important}
+          .course-card{display:grid!important;grid-template-columns:92px 1fr;border-radius:16px!important}
+          .course-card .course-cover{height:auto!important;min-height:100%}
+          .course-body{padding:14px 14px 16px!important}
+          .course-icon,.course-feat{display:none!important}
+          .course-tag{margin-bottom:8px!important;padding:3px 8px!important;font-size:10px!important}
+          .course-body h3{font-size:16px!important;margin-bottom:6px!important;line-height:1.25}
+          .course-body p{font-size:13px!important;line-height:1.6!important}
+          .info-card{padding:22px 18px!important}
+
+          /* ── GALLERY ── */
+          .sec-gallery{padding:56px 16px 64px!important}
+          .gallery-head{margin-bottom:28px!important}
+          .gal-viewport{height:auto!important;touch-action:pan-y}
+          .gal-side{display:none!important}
+          .gal-slide{width:min(100%,380px)!important}
+          .gal-center{position:relative!important;animation:fadeInOnly .35s ease}
+
+          /* ── CONTACT ── */
+          .sec-contact{padding:56px 16px!important}
+          #contact .contact-grid{gap:32px!important}
+          .contact-art{display:none!important}
+          .course-checks{grid-template-columns:1fr 1fr!important;gap:2px 10px!important;padding:8px 12px!important}
+          .course-checks label{padding:9px 0!important}
+          .course-checks input{width:18px!important;height:18px!important}
+
+          /* ── FOOTER (extra bottom room so floating buttons never cover text) ── */
+          .site-footer{padding:36px 20px 100px!important}
+          .footer-top{flex-direction:column!important;align-items:flex-start!important;gap:14px!important}
+          .footer-nav{flex-wrap:wrap!important;gap:2px 22px!important}
+          .footer-nav a{padding:8px 0!important}
+          .footer-bottom{flex-direction:column!important;align-items:flex-start!important}
+
+          /* ── FLOATING BUTTONS: two small round buttons, stacked bottom-right ── */
+          .wa-fab{right:14px!important;bottom:calc(14px + env(safe-area-inset-bottom))!important;width:50px;height:50px;padding:0!important;gap:0!important;justify-content:center!important;border-radius:50%!important;background:#25D366!important}
+          .wa-fab .wa-label{display:none!important}
+          .wa-fab svg{width:34px!important;height:34px!important}
+          .wa-hide-chat{display:none!important}
+          .chat-root{left:auto!important;right:14px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;align-items:flex-end!important}
+          .chat-fab{width:50px!important;height:50px!important;font-size:21px!important;animation:none!important}
+          .chat-fab-open{display:none!important}
+          .chat-hint{display:none!important}
+          .chat-window{position:fixed!important;left:10px!important;right:10px!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;width:auto!important;height:min(560px,calc(100vh - 20px))!important;height:min(560px,calc(100dvh - 20px))!important}
+
         @media(max-width:768px){
           .hide-mob{display:none!important}
           .two-col{grid-template-columns:1fr!important}
@@ -1645,7 +1757,7 @@ export default function RangTarang() {
 
       {/* ── NAV ── */}
       <header style={{ position:"sticky", top:0, zIndex:100, background:C.nav, backdropFilter:"blur(20px)", borderBottom:`1px solid ${C.divider}` }}>
-        <div style={{ maxWidth:1160, margin:"0 auto", padding:"0 24px", height:64, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div className="site-header-inner" style={{ maxWidth:1160, margin:"0 auto", padding:"0 24px", height:64, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <a href="#home" onClick={e => { e.preventDefault(); scrollTo("home"); }} style={{ display:"flex", alignItems:"center", gap:10, background:"none", border:"none" }}>
             <div style={{ width:44, height:44, borderRadius:"50%", background:"#000", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
               <img src={logoImg} alt="Rang Tarang Fine Arts Academy logo" style={{ width:38, height:38, objectFit:"contain", filter: dark ? "brightness(1.2) drop-shadow(0 0 4px #40817566)" : "drop-shadow(0 1px 3px #2E454033)" }}/>
@@ -1664,7 +1776,7 @@ export default function RangTarang() {
             ))}
           </nav>
           <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-            <button onClick={() => setDark(d=>!d)}
+            <button onClick={() => setDark(d=>!d)} className="theme-btn" aria-label="Toggle dark mode"
               style={{ width:36, height:36, borderRadius:"50%", border:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"center", color:C.muted, fontSize:15, background:"none", transition:"all .3s" }}>
               {dark ? "☀" : "☽"}
             </button>
@@ -1672,12 +1784,12 @@ export default function RangTarang() {
               style={{ padding:"9px 22px", borderRadius:100, background:C.jade, color:"#fff", fontSize:13, fontWeight:500 }}>
               Enroll now
             </button>
-            <button className="hide-desk" onClick={() => setNavOpen(o=>!o)}
+            <button className="hide-desk menu-btn" aria-label="Open menu" onClick={() => setNavOpen(o=>!o)}
               style={{ fontSize:22, color:C.ink, padding:4, background:"none", border:"none" }}>☰</button>
           </div>
         </div>
         {navOpen && (
-          <div style={{ background:C.bg, padding:"12px 24px 24px", borderTop:`1px solid ${C.divider}` }}>
+          <div className="mnav" style={{ background:C.bg, padding:"12px 24px 24px", borderTop:`1px solid ${C.divider}` }}>
             {NAV.map(l => (
               <a key={l} href={`#${l}`} onClick={e => { e.preventDefault(); scrollTo(l); }}
                 style={{ display:"block", padding:"11px 0", fontSize:15, color:C.muted, textTransform:"capitalize", width:"100%", textAlign:"left", background:"none", border:"none" }}>{l}</a>
@@ -1691,25 +1803,25 @@ export default function RangTarang() {
       </header>
 
       {/* ── HERO ── */}
-      <section id="home" style={{ position:"relative", maxWidth:1160, margin:"0 auto", padding:"100px 24px 100px", overflow:"hidden" }}>
+      <section id="home" className="hero-section" style={{ position:"relative", maxWidth:1160, margin:"0 auto", padding:"100px 24px 100px", overflow:"hidden" }}>
         {/* Morphing ambient blobs */}
-        <div className="morph-blob" style={{ position:"absolute", top:-80, right:-100, width:500, height:500, background:`radial-gradient(ellipse at 40% 40%, ${C.jade}12, ${C.forest}08, transparent 70%)`, pointerEvents:"none", zIndex:0 }}/>
-        <div className="morph-blob" style={{ position:"absolute", bottom:-60, left:-80, width:380, height:380, background:`radial-gradient(ellipse at 60% 60%, ${C.lavender}0a, ${C.jade}06, transparent 70%)`, pointerEvents:"none", zIndex:0, animationDelay:"4s" }}/>
+        <div className="morph-blob hide-mob" style={{ position:"absolute", top:-80, right:-100, width:500, height:500, background:`radial-gradient(ellipse at 40% 40%, ${C.jade}12, ${C.forest}08, transparent 70%)`, pointerEvents:"none", zIndex:0 }}/>
+        <div className="morph-blob hide-mob" style={{ position:"absolute", bottom:-60, left:-80, width:380, height:380, background:`radial-gradient(ellipse at 60% 60%, ${C.lavender}0a, ${C.jade}06, transparent 70%)`, pointerEvents:"none", zIndex:0, animationDelay:"4s" }}/>
         {/* Paint-splash particles */}
-        <div className="particle p1" style={{ width:10, height:10, background:C.jade, top:80, right:200, opacity:.3, zIndex:1 }}/>
-        <div className="particle p2" style={{ width:6, height:6, background:C.lavender, top:150, right:350, opacity:.4, zIndex:1 }}/>
-        <div className="particle p3" style={{ width:14, height:14, background:C.forest, top:250, right:120, opacity:.25, zIndex:1 }}/>
-        <div className="particle p4" style={{ width:8, height:8, background:C.jade, top:300, left:100, opacity:.2, zIndex:1 }}/>
-        <div className="particle p5" style={{ width:5, height:5, background:C.lavender, top:180, left:50, opacity:.35, zIndex:1 }}/>
-        <div className="particle p1" style={{ width:12, height:12, background:C.jade, top:400, right:300, opacity:.18, zIndex:1 }}/>
-        <div className="particle p3" style={{ width:7, height:7, background:C.lavender, top:60, left:200, opacity:.28, zIndex:1 }}/>
+        <div className="particle p1 hide-mob" style={{ width:10, height:10, background:C.jade, top:80, right:200, opacity:.3, zIndex:1 }}/>
+        <div className="particle p2 hide-mob" style={{ width:6, height:6, background:C.lavender, top:150, right:350, opacity:.4, zIndex:1 }}/>
+        <div className="particle p3 hide-mob" style={{ width:14, height:14, background:C.forest, top:250, right:120, opacity:.25, zIndex:1 }}/>
+        <div className="particle p4 hide-mob" style={{ width:8, height:8, background:C.jade, top:300, left:100, opacity:.2, zIndex:1 }}/>
+        <div className="particle p5 hide-mob" style={{ width:5, height:5, background:C.lavender, top:180, left:50, opacity:.35, zIndex:1 }}/>
+        <div className="particle p1 hide-mob" style={{ width:12, height:12, background:C.jade, top:400, right:300, opacity:.18, zIndex:1 }}/>
+        <div className="particle p3 hide-mob" style={{ width:7, height:7, background:C.lavender, top:60, left:200, opacity:.28, zIndex:1 }}/>
         {/* ambient deco */}
-        <div style={{ position:"absolute", top:40, right:40, opacity:.2, zIndex:1 }} className="spin-slow"><DecoCircle size={160} color={C.jade}/></div>
-        <div style={{ position:"absolute", top:120, right:120, opacity:.15, zIndex:1 }} className="spin-rev"><DecoCircle size={80} color={C.lavender}/></div>
-        <div style={{ position:"absolute", bottom:120, left:20, zIndex:1 }} className="float-anim-slow"><DecoLeaf size={44} color={C.jade} opacity={.2}/></div>
-        <div style={{ position:"absolute", top:80, left:80, zIndex:1 }} className="float-anim"><DecoStar size={16} color={C.lavender} opacity={.4}/></div>
-        <div style={{ position:"absolute", bottom:80, right:120, zIndex:1 }}><DecoStar size={12} color={C.jade} opacity={.3}/></div>
-        <div style={{ position:"absolute", top:200, left:180, zIndex:1 }} className="float-anim-med"><DecoBrush size={44} color={C.lavender} opacity={.15}/></div>
+        <div style={{ position:"absolute", top:40, right:40, opacity:.2, zIndex:1 }} className="spin-slow hide-mob"><DecoCircle size={160} color={C.jade}/></div>
+        <div style={{ position:"absolute", top:120, right:120, opacity:.15, zIndex:1 }} className="spin-rev hide-mob"><DecoCircle size={80} color={C.lavender}/></div>
+        <div style={{ position:"absolute", bottom:120, left:20, zIndex:1 }} className="float-anim-slow hide-mob"><DecoLeaf size={44} color={C.jade} opacity={.2}/></div>
+        <div style={{ position:"absolute", top:80, left:80, zIndex:1 }} className="float-anim hide-mob"><DecoStar size={16} color={C.lavender} opacity={.4}/></div>
+        <div className="hide-mob" style={{ position:"absolute", bottom:80, right:120, zIndex:1 }}><DecoStar size={12} color={C.jade} opacity={.3}/></div>
+        <div style={{ position:"absolute", top:200, left:180, zIndex:1 }} className="float-anim-med hide-mob"><DecoBrush size={44} color={C.lavender} opacity={.15}/></div>
 
         <div style={{ position:"relative", zIndex:2 }}>
         <FadeUp>
@@ -1726,7 +1838,7 @@ export default function RangTarang() {
         </FadeUp>
         <FadeUp>
           <div className="hero-pill-sub">
-          <div style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"6px 16px", borderRadius:100, background:C.jadeLight, marginBottom:28, border:`1px solid ${C.jade}33` }}>
+          <div className="hero-pill" style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"6px 16px", borderRadius:100, background:C.jadeLight, marginBottom:28, border:`1px solid ${C.jade}33` }}>
             <span style={{ width:6, height:6, borderRadius:"50%", background:C.jade, display:"inline-block" }}/>
             <span style={{ fontSize:12, fontWeight:500, color:C.jade, letterSpacing:"1px", textTransform:"uppercase" }}>Drawing Classes for All Ages | Online &amp; Offline</span>
           </div>
@@ -1736,7 +1848,7 @@ export default function RangTarang() {
         <div className="hero-grid" style={{ display:"grid", gridTemplateColumns:"1.1fr 1fr", gap:80, alignItems:"center" }}>
           <div className="hero-text-col">
             <FadeUp delay={50}>
-              <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(44px,6.5vw,82px)", fontWeight:900, lineHeight:1.02, letterSpacing:"-2.5px", color:C.ink }}>
+              <h1 className="hero-h1" style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(44px,6.5vw,82px)", fontWeight:900, lineHeight:1.02, letterSpacing:"-2.5px", color:C.ink }}>
                 Where every<br/>
                 <span style={{ color:C.jade, fontStyle:"italic" }}>brushstroke</span><br/>
                 <span style={{ color:C.lavender }}>becomes</span> art
@@ -1749,11 +1861,11 @@ export default function RangTarang() {
             </FadeUp>
             <FadeUp delay={180}>
               <div className="hero-btns" style={{ display:"flex", flexWrap:"wrap", gap:12, marginTop:36 }}>
-                <button onClick={() => scrollTo("enroll")} className="pill"
+                <button onClick={() => scrollTo("enroll")} className="pill hero-btn-1"
                   style={{ padding:"14px 32px", borderRadius:100, background:`linear-gradient(135deg,${C.forest},${C.jade})`, color:"#fff", fontSize:14, fontWeight:500, boxShadow:`0 8px 24px ${C.jade}44` }}>
                   Enroll now
                 </button>
-                <button onClick={() => scrollTo("classes")} className="pill"
+                <button onClick={() => scrollTo("classes")} className="pill hero-btn-2"
                   style={{ padding:"14px 28px", borderRadius:100, border:`1.5px solid ${C.border}`, color:C.muted, fontSize:14, background:"none" }}>
                   Explore classes →
                 </button>
@@ -1765,7 +1877,7 @@ export default function RangTarang() {
               </p>
             </FadeUp>
             <FadeUp delay={260}>
-              <p className="hero-sub" style={{ fontSize:14, color:C.muted, lineHeight:1.85, marginTop:24, maxWidth:460 }}>
+              <p className="hero-sub hero-sub-2" style={{ fontSize:14, color:C.muted, lineHeight:1.85, marginTop:24, maxWidth:460 }}>
                 Rang Tarang is a premier drawing and fine arts academy in Bhagalpur, offering sketching, painting, water colour, oil colour and creative art classes for children and adults.
               </p>
             </FadeUp>
@@ -1812,9 +1924,9 @@ export default function RangTarang() {
         {/* Stats strip */}
         <div ref={statsRef}>
           <FadeUp delay={280}>
-            <div style={{ marginTop:88, display:"flex", flexWrap:"wrap", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"36px 0" }}>
+            <div className="stats-strip" style={{ marginTop:88, display:"flex", flexWrap:"wrap", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"36px 0" }}>
               {[["6","+","courses offered"],["25","+","years experience"],["5","★","student rating"],["10000","+","students taught"]].map(([v,s,l],i) => (
-                <div key={l} style={{ flex:"1 1 120px", textAlign:"center", padding:"0 16px", borderLeft:i>0?`1px solid ${C.border}`:"none" }}>
+                <div key={l} className="stat-item" style={{ flex:"1 1 120px", textAlign:"center", padding:"0 16px", borderLeft:i>0?`1px solid ${C.border}`:"none" }}>
                   <StatCard value={parseInt(v)} suffix={s} label={l} active={statsVis} C={C}/>
                 </div>
               ))}
@@ -1825,18 +1937,18 @@ export default function RangTarang() {
       </section>
 
       {/* ── ABOUT ── */}
-      <section id="about" style={{ background:dark?"#0e0c0c":C.forest+"18", padding:"120px 24px", position:"relative", overflow:"hidden" }}>
+      <section id="about" className="sec-about" style={{ background:dark?"#0e0c0c":C.forest+"18", padding:"120px 24px", position:"relative", overflow:"hidden" }}>
         {/* animated bg deco */}
-        <div style={{ position:"absolute", top:40, right:60, opacity:.06 }}><DecoCircle size={240} color={C.lavender} opacity={1}/></div>
-        <div style={{ position:"absolute", bottom:60, left:40 }} className="float-anim-slow"><DecoLeaf size={64} color={C.jade} opacity={.12}/></div>
+        <div className="hide-mob" style={{ position:"absolute", top:40, right:60, opacity:.06 }}><DecoCircle size={240} color={C.lavender} opacity={1}/></div>
+        <div style={{ position:"absolute", bottom:60, left:40 }} className="float-anim-slow hide-mob"><DecoLeaf size={64} color={C.jade} opacity={.12}/></div>
         {/* extra ambient blob */}
-        <div className="morph-blob" style={{ position:"absolute", top:-40, left:-60, width:320, height:320, background:`radial-gradient(ellipse at 50% 50%, ${C.jade}0a, transparent 70%)`, pointerEvents:"none" }}/>
+        <div className="morph-blob hide-mob" style={{ position:"absolute", top:-40, left:-60, width:320, height:320, background:`radial-gradient(ellipse at 50% 50%, ${C.jade}0a, transparent 70%)`, pointerEvents:"none" }}/>
 
         <div className="two-col" style={{ maxWidth:1160, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1.5fr", gap:72, alignItems:"center" }}>
           {/* LEFT: instructor card with slide-in-left */}
           <SlideInLeft>
             <div style={{ position:"relative" }}>
-              <div style={{ background:C.paper, borderRadius:28, padding:"44px 36px", textAlign:"center", boxShadow:`0 4px 48px rgba(0,0,0,.08)`, border:`1px solid ${C.border}`, position:"relative", overflow:"hidden" }}>
+              <div className="about-card" style={{ background:C.paper, borderRadius:28, padding:"44px 36px", textAlign:"center", boxShadow:`0 4px 48px rgba(0,0,0,.08)`, border:`1px solid ${C.border}`, position:"relative", overflow:"hidden" }}>
                 <div style={{ position:"absolute", top:0, left:0, right:0, height:4, background:`linear-gradient(90deg,${C.forest},${C.jade},${C.lavender})` }}/>
                 {/* avatar */}
                 <ScaleIn delay={200}>
@@ -1862,8 +1974,8 @@ export default function RangTarang() {
                   </div>
                 </FadeIn>
               </div>
-              <div style={{ position:"absolute", top:-16, right:-16 }}><DecoStar size={28} color={C.lavender} opacity={.5}/></div>
-              <div style={{ position:"absolute", bottom:-10, left:-10 }}><DecoStar size={18} color={C.jade} opacity={.35}/></div>
+              <div className="hide-mob" style={{ position:"absolute", top:-16, right:-16 }}><DecoStar size={28} color={C.lavender} opacity={.5}/></div>
+              <div className="hide-mob" style={{ position:"absolute", bottom:-10, left:-10 }}><DecoStar size={18} color={C.jade} opacity={.35}/></div>
             </div>
           </SlideInLeft>
 
@@ -1891,7 +2003,7 @@ export default function RangTarang() {
             </SlideInRight>
 
             {/* Illustration — Artist at Easel */}
-            <ParallaxFade>
+            <ParallaxFade className="hide-mob">
               <div style={{ borderRadius:20, overflow:"hidden", border:`1px solid ${C.border}`, marginBottom:24, boxShadow:`0 8px 32px rgba(0,0,0,.07)`, aspectRatio:"11/8" }}>
                 <IllustrationArtist dark={dark}/>
               </div>
@@ -1909,7 +2021,7 @@ export default function RangTarang() {
             </FadeIn>
 
             {/* Feature card — only All Ages */}
-            <div style={{ display:"flex", justifyContent:"center" }}>
+            <div className="hide-mob" style={{ display:"flex", justifyContent:"center" }}>
               <FadeIn delay={420}>
                 <div className="card-lift" style={{ background:C.card, borderRadius:16, padding:"20px 24px", border:`1px solid ${C.border}`, maxWidth:280, width:"100%", textAlign:"center" }}>
                   <span style={{ fontSize:14, color:C.jade }}>✦</span>
@@ -1923,13 +2035,13 @@ export default function RangTarang() {
       </section>
 
       {/* ── CLASSES ── */}
-      <section id="classes" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
-        <div style={{ position:"absolute", top:80, left:32 }} className="float-anim"><DecoLeaf size={32} color={C.lavender} opacity={.12}/></div>
-        <div style={{ position:"absolute", bottom:100, right:40 }} className="float-anim-slow"><DecoBrush size={56} color={C.jade} opacity={.1}/></div>
+      <section id="classes" className="sec-classes" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
+        <div style={{ position:"absolute", top:80, left:32 }} className="float-anim hide-mob"><DecoLeaf size={32} color={C.lavender} opacity={.12}/></div>
+        <div style={{ position:"absolute", bottom:100, right:40 }} className="float-anim-slow hide-mob"><DecoBrush size={56} color={C.jade} opacity={.1}/></div>
 
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
           {/* Section header with palette illustration side by side */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:48, alignItems:"center", marginBottom:72 }}>
+          <div className="classes-head" style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:48, alignItems:"center", marginBottom:72 }}>
             <FadeUp>
               <div>
                 <p style={{ fontSize:11, fontWeight:600, letterSpacing:"2px", textTransform:"uppercase", color:C.jade, marginBottom:12 }}>Courses Offered</p>
@@ -1952,25 +2064,25 @@ export default function RangTarang() {
             const icons = ["✏️","🖌️","💧","🎨","🏺","🎓","🎯","💎","🖼️","🏆"];
             const isSpecial = (idx) => idx >= 5;
             return (
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:24, marginBottom:64 }}>
+              <div className="courses-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:24, marginBottom:64 }}>
                 {COURSES.map((c, i) => {
                   const special = isSpecial(i);
                   const cardBg = activeCard===i ? C.jadeLight : C.card;
                   return (
                     <FadeUp key={c.name} delay={i*50}>
-                      <div className="card-lift" onClick={() => setActiveCard(activeCard===i?null:i)}
+                      <div className="card-lift course-card" onClick={() => setActiveCard(activeCard===i?null:i)}
                         style={{ background:cardBg, borderRadius:20, border:`1.5px solid ${special?C.lavender+"66":(activeCard===i?C.jade:C.border)}`, height:"100%", cursor:"pointer", transition:"all .3s cubic-bezier(.16,1,.3,1)", position:"relative", overflow:"hidden" }}>
                         {/* Colourful cover illustration, related to the course */}
-                        <div style={{ height:112, backgroundImage:svgBg(COURSE_ART[i]), backgroundSize:"cover", backgroundPosition:"center", position:"relative" }}>
+                        <div className="course-cover" style={{ height:112, backgroundImage:svgBg(COURSE_ART[i]), backgroundSize:"cover", backgroundPosition:"center", position:"relative" }}>
                           <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.18) 100%)" }}/>
                         </div>
                         {special && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.lavender},${C.jade},${C.lavender})`, zIndex:2 }}/>}
                         {!special && activeCard===i && <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(90deg,${C.jade},${C.lavender})`, zIndex:2 }}/>}
-                        {special && <div style={{ position:"absolute", top:10, right:12, fontSize:10, fontWeight:700, color:"#fff", letterSpacing:"1px", opacity:.9, textShadow:"0 1px 4px rgba(0,0,0,.45)", zIndex:2 }}>★ FEATURED</div>}
-                        <div style={{ position:"relative", padding:"0 22px 28px" }}>
-                          <div style={{ width:52, height:52, borderRadius:14, marginTop:-26, marginBottom:16, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, border:`3px solid ${cardBg}`, boxShadow:"0 3px 10px rgba(0,0,0,.15)" }}>{icons[i]}</div>
-                          <span style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:special?C.lavender:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${special?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
-                          <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:special?C.lavender:C.ink, marginBottom:10 }}>{c.name}</h3>
+                        {special && <div className="course-feat" style={{ position:"absolute", top:10, right:12, fontSize:10, fontWeight:700, color:"#fff", letterSpacing:"1px", opacity:.9, textShadow:"0 1px 4px rgba(0,0,0,.45)", zIndex:2 }}>★ FEATURED</div>}
+                        <div className="course-body" style={{ position:"relative", padding:"0 22px 28px" }}>
+                          <div className="course-icon" style={{ width:52, height:52, borderRadius:14, marginTop:-26, marginBottom:16, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.forest+"18"), display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, border:`3px solid ${cardBg}`, boxShadow:"0 3px 10px rgba(0,0,0,.15)" }}>{icons[i]}</div>
+                          <span className="course-tag" style={{ display:"inline-block", padding:"4px 10px", borderRadius:100, background:special?`${C.lavender}22`:(activeCard===i?`${C.jade}22`:C.jadeLight), color:special?lavText:C.jade, fontSize:11, fontWeight:600, letterSpacing:".4px", textTransform:"uppercase", marginBottom:12, border:`1px solid ${special?C.lavender+"44":C.jade+"33"}` }}>{c.tag}</span>
+                          <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:700, color:special?lavText:C.ink, marginBottom:10 }}>{c.name}</h3>
                           <p style={{ fontSize:13, color:C.muted, lineHeight:1.8 }}>{c.desc}</p>
                           {activeCard===i && <button onClick={e=>{e.stopPropagation();scrollTo("enroll");}} className="pill" style={{ marginTop:18, padding:"9px 18px", borderRadius:100, background:special?C.lavender:C.jade, color:special?C.midnight:"#fff", fontSize:12, fontWeight:500 }}>Enroll in {c.name} →</button>}
                         </div>
@@ -1984,7 +2096,7 @@ export default function RangTarang() {
 
           <div className="two-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
             <FadeUp>
-              <div style={{ background:C.card, borderRadius:20, padding:"30px 26px", border:`1px solid ${C.border}` }}>
+              <div className="info-card" style={{ background:C.card, borderRadius:20, padding:"30px 26px", border:`1px solid ${C.border}` }}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:22 }}>
                   <div style={{ width:32, height:32, borderRadius:8, background:C.jadeLight, display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <DecoCircle size={20} color={C.jade} opacity={0.8}/>
@@ -2001,7 +2113,7 @@ export default function RangTarang() {
               </div>
             </FadeUp>
             <FadeUp delay={80}>
-              <div style={{ background:C.card, borderRadius:20, padding:"30px 26px", border:`1px solid ${C.border}` }}>
+              <div className="info-card" style={{ background:C.card, borderRadius:20, padding:"30px 26px", border:`1px solid ${C.border}` }}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:22 }}>
                   <DecoStar size={20} color={C.lavender} opacity={.8}/>
                   <h3 style={{ fontSize:16, fontWeight:600, color:C.ink }}>Also Available</h3>
@@ -2022,13 +2134,13 @@ export default function RangTarang() {
       </section>
 
       {/* ── GALLERY ── */}
-      <section id="gallery" style={{ background:dark?"#0e0c0c":C.forest+"10", padding:"120px 24px", position:"relative" }}>
-        <div style={{ position:"absolute", top:60, right:60, opacity:.08 }} className="spin-slow"><DecoCircle size={200} color={C.lavender} opacity={1}/></div>
-        <div style={{ position:"absolute", bottom:80, left:40, opacity:.06 }} className="spin-rev"><DecoCircle size={140} color={C.jade} opacity={1}/></div>
+      <section id="gallery" className="sec-gallery" style={{ background:dark?"#0e0c0c":C.forest+"10", padding:"120px 24px", position:"relative" }}>
+        <div style={{ position:"absolute", top:60, right:60, opacity:.08 }} className="spin-slow hide-mob"><DecoCircle size={200} color={C.lavender} opacity={1}/></div>
+        <div style={{ position:"absolute", bottom:80, left:40, opacity:.06 }} className="spin-rev hide-mob"><DecoCircle size={140} color={C.jade} opacity={1}/></div>
 
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
           <FadeUp>
-            <div style={{ textAlign:"center", marginBottom:80 }}>
+            <div className="gallery-head" style={{ textAlign:"center", marginBottom:80 }}>
               <p style={{ fontSize:11, fontWeight:600, letterSpacing:"2px", textTransform:"uppercase", color:C.jade, marginBottom:12 }}>Student & Studio Work</p>
               <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,50px)", fontWeight:700, letterSpacing:"-1px", color:C.ink }}>Gallery</h2>
               <p style={{ fontSize:15, color:C.muted, marginTop:14, maxWidth:440, margin:"14px auto 0" }}>Works spanning every medium taught at Rang Tarang</p>
@@ -2040,9 +2152,9 @@ export default function RangTarang() {
       </section>
 
       {/* ── CONTACT ── */}
-      <section id="contact" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
-        <div style={{ position:"absolute", bottom:80, left:40 }} className="float-anim"><DecoLeaf size={44} color={C.lavender} opacity={.1}/></div>
-        <div style={{ position:"absolute", top:80, right:60 }} className="float-anim-med"><DecoStar size={20} color={C.jade} opacity={.2}/></div>
+      <section id="contact" className="sec-contact" style={{ padding:"clamp(80px,8vw,110px) clamp(16px,4vw,24px)", position:"relative" }}>
+        <div style={{ position:"absolute", bottom:80, left:40 }} className="float-anim hide-mob"><DecoLeaf size={44} color={C.lavender} opacity={.1}/></div>
+        <div style={{ position:"absolute", top:80, right:60 }} className="float-anim-med hide-mob"><DecoStar size={20} color={C.jade} opacity={.2}/></div>
 
         <div className="contact-grid" style={{ maxWidth:1160, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:80, alignItems:"start" }}>
           <FadeUp>
@@ -2059,7 +2171,7 @@ export default function RangTarang() {
               ))}
             </div>
             {/* colorful art supplies accent */}
-            <div className="ink-accent" style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, width:"100%" }}>
+            <div className="ink-accent contact-art" style={{ marginBottom:24, borderRadius:16, overflow:"hidden", border:`1px solid ${C.border}`, width:"100%" }}>
               <ContactAccentIllustration dark={dark}/>
             </div>
             {/* Map card — opens Google Maps in new tab */}
@@ -2170,7 +2282,7 @@ export default function RangTarang() {
                   {/* Courses multi-select + Mode */}
                   <div>
                     <label style={{ fontSize:11, fontWeight:600, color:C.muted, display:"block", marginBottom:8, textTransform:"uppercase", letterSpacing:".8px" }}>Course(s) — select all that apply</label>
-                    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(175px,1fr))", gap:8, padding:"14px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg }}>
+                    <div className="course-checks" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(175px,1fr))", gap:8, padding:"14px 16px", borderRadius:12, border:`1px solid ${C.border}`, background:C.bg }}>
                       {COURSES.map(c => {
                         const checked = form.course.includes(c.name);
                         return (
@@ -2239,9 +2351,9 @@ export default function RangTarang() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ background:C.midnight, padding:"48px 24px" }}>
+      <footer className="site-footer" style={{ background:C.midnight, padding:"48px 24px" }}>
         <div style={{ maxWidth:1160, margin:"0 auto" }}>
-          <div style={{ display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:20, marginBottom:24 }}>
+          <div className="footer-top" style={{ display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:20, marginBottom:24 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <img src={logoImg} alt="Rang Tarang Fine Arts Academy logo" style={{ width:34, height:34, objectFit:"contain", filter:"brightness(1.2) drop-shadow(0 0 6px #40817555)" }}/>
               <div style={{ display:"flex", alignItems:"baseline", gap:3 }}>
@@ -2249,10 +2361,10 @@ export default function RangTarang() {
                 <span style={{ fontFamily:"'Playfair Display',serif", fontSize:20, fontWeight:400, fontStyle:"italic", color:"#CCC8C8" }}>Tarang</span>
               </div>
             </div>
-            <div style={{ display:"flex", gap:28 }}>
+            <div className="footer-nav" style={{ display:"flex", gap:28 }}>
               {NAV.map(l => (
                 <a key={l} href={`#${l}`} onClick={e => { e.preventDefault(); scrollTo(l); }} className="n-link"
-                  style={{ fontSize:13, color:"#6B7180", textTransform:"capitalize" }}>
+                  style={{ fontSize:13, color:"#9096A6", textTransform:"capitalize" }}>
                   {l}
                 </a>
               ))}
@@ -2264,15 +2376,15 @@ export default function RangTarang() {
               <div key={hex} style={{ height:3, flex:1, background:hex, borderRadius:2, opacity:.6 }}/>
             ))}
           </div>
-          <div style={{ borderTop:"1px solid #1E1C1C", paddingTop:20, display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:12 }}>
-            <p style={{ fontSize:13, color:"#4A5060", fontStyle:"italic" }}>Discover yourself, through art.</p>
-            <p style={{ fontSize:12, color:"#3A4050" }}>© {new Date().getFullYear()} Rang Tarang · Taught by Chandra Mohan, Gold Medalist in Fine Arts</p>
+          <div className="footer-bottom" style={{ borderTop:"1px solid #1E1C1C", paddingTop:20, display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:12 }}>
+            <p style={{ fontSize:13, color:"#8A90A0", fontStyle:"italic" }}>Discover yourself, through art.</p>
+            <p style={{ fontSize:12, color:"#7A8090" }}>© {new Date().getFullYear()} Rang Tarang · Taught by Chandra Mohan, Gold Medalist in Fine Arts</p>
           </div>
         </div>
       </footer>
 
       {/* ── AI CHATBOT ── */}
-      <div style={{ position:"fixed", bottom:28, left:28, zIndex:9998, display:"flex", flexDirection:"column", alignItems:"flex-start", gap:12 }}>
+      <div className="chat-root" style={{ position:"fixed", bottom:28, left:28, zIndex:9998, display:"flex", flexDirection:"column", alignItems:"flex-start", gap:12 }}>
 
         {/* Chat window */}
         {chatOpen && (
@@ -2411,7 +2523,7 @@ export default function RangTarang() {
 
         {/* Toggle button */}
         <button
-          className="chat-bubble-btn chat-pulse"
+          className={`chat-bubble-btn chat-pulse chat-fab${chatOpen ? " chat-fab-open" : ""}`}
           onClick={() => setChatOpen(o => !o)}
           aria-label="Open AI assistant"
           style={{
@@ -2440,6 +2552,7 @@ export default function RangTarang() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
+        className={`wa-fab${chatOpen ? " wa-hide-chat" : ""}`}
         style={{
           position: "fixed",
           bottom: 28,
@@ -2479,7 +2592,7 @@ export default function RangTarang() {
             d="M23.5 8.5A10.45 10.45 0 0016 5.5C10.2 5.5 5.5 10.2 5.5 16c0 1.85.48 3.65 1.4 5.24L5.5 26.5l5.4-1.42A10.46 10.46 0 0016 26.5c5.8 0 10.5-4.7 10.5-10.5 0-2.8-1.09-5.44-3-7.5zm-7.5 16.15a8.68 8.68 0 01-4.43-1.22l-.32-.19-3.2.84.86-3.12-.21-.33A8.68 8.68 0 017.32 16C7.32 11.2 11.2 7.32 16 7.32S24.68 11.2 24.68 16 20.8 24.65 16 24.65zm4.77-6.5c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.66.85-.81 1.02-.15.17-.3.19-.56.06-.26-.13-1.1-.4-2.1-1.29-.78-.7-1.3-1.56-1.45-1.82-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.46.13-.16.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.58-1.4-.8-1.91-.21-.5-.43-.43-.58-.44h-.5c-.17 0-.45.06-.69.32-.24.26-.91.89-.91 2.17s.93 2.52 1.06 2.69c.13.17 1.83 2.8 4.44 3.92.62.27 1.1.43 1.48.55.62.2 1.19.17 1.63.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.06-.11-.23-.17-.49-.3z"
           />
         </svg>
-        <span style={{
+        <span className="wa-label" style={{
           fontFamily: "'Playfair Display', serif",
           fontSize: 14,
           fontWeight: 700,
