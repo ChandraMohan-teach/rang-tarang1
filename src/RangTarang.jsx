@@ -1348,11 +1348,20 @@ export default function RangTarang() {
   /* ── AI CHATBOT STATE ── */
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { role: "assistant", content: "Namaste! 🎨 I'm the Rang Tarang assistant. Ask me anything about our courses, fees, timings, or how to enroll!" }
+    { role: "assistant", content: "Namaste! 🎨 I'm the Rang Tarang assistant. Ask me about our classes, or any drawing & painting question — shading, colours, perspective, NIFT/NID prep and more!" }
   ]);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const [showChatHint, setShowChatHint] = useState(false);
+
+  /* Show a small "I can assist you" bubble next to the AI icon */
+  useEffect(() => {
+    const show = setTimeout(() => setShowChatHint(true), 2500);
+    const hide = setTimeout(() => setShowChatHint(false), 20000);
+    return () => { clearTimeout(show); clearTimeout(hide); };
+  }, []);
+  useEffect(() => { if (chatOpen) setShowChatHint(false); }, [chatOpen]);
 
   useEffect(() => {
     if (chatOpen && chatEndRef.current) {
@@ -1360,7 +1369,7 @@ export default function RangTarang() {
     }
   }, [chatMessages, chatOpen]);
 
-  const ACADEMY_SYSTEM_PROMPT = `You are a helpful assistant for Rang Tarang, a fine arts academy in Bhagalpur, Bihar, India. Answer questions warmly and concisely about the academy. Here is everything you know:
+  const ACADEMY_SYSTEM_PROMPT = `You are a helpful assistant for Rang Tarang, a fine arts academy in Bhagalpur, Bihar, India. Answer warmly and helpfully. Here is everything you know about the academy:
 
 ABOUT THE ACADEMY:
 - Name: Rang Tarang (meaning "Waves of Colour")
@@ -1401,13 +1410,17 @@ HOW TO ENROLL:
 - Or call/WhatsApp: 9905030035
 - After submitting the form, the team will call back to confirm the batch
 
-STRICT RULES — FOLLOW THESE EXACTLY:
-1. You ONLY answer questions about Rang Tarang academy — courses, fees, timings, enrollment, instructor, location, and contact.
-2. If someone asks ANYTHING unrelated (maths, coding, general knowledge, other topics, jokes, etc.), reply ONLY with: "I can only help with questions about Rang Tarang academy. For anything else, please use Google! 😊 Want to know about our courses or how to enroll?"
-3. Keep answers short — 2 to 4 sentences max.
-4. If asked about fees, say fees vary by course and the team will share details on a call.
-5. If you don't know something about the academy, suggest calling 9905030035.
-6. Never answer homework, solve equations, write code, or help with anything outside the academy.`;
+RULES — FOLLOW THESE:
+1. You are BOTH the academy's assistant AND a friendly art teacher. You can answer:
+   (a) Anything about Rang Tarang — courses, timings, enrollment, instructor, location, contact.
+   (b) Any sensible question about drawing, sketching, painting, art and design — techniques, shading, perspective, proportions, colour theory and colour mixing, composition, materials and tools (pencils, brushes, paper, canvas, paints), watercolour / oil / acrylic / pastel / charcoal, sculpture and clay, portraits, still life, landscapes, art history and famous artists/art styles, practice routines, how to improve, fixing common mistakes, and art careers.
+   (c) Questions about art & design entrance exams and careers — NIFT, NID, Pearl Academy, AIEED, UCEED, CEED, BFA, MFA — including exam pattern, how to prepare, portfolio tips, and which art college/course to choose.
+2. When a drawing/painting question relates to one of our courses, answer it helpfully and then gently mention that Rang Tarang teaches this (e.g. "This is covered in our Sketching course").
+3. Give genuinely useful answers. Simple questions: 2-4 sentences. How-to or technique questions: a short clear explanation or a few simple steps (up to about 8 sentences). Plain text only, no markdown tables.
+4. If asked about fees, say fees vary by course and the team will share details on a call at 9905030035.
+5. If you don't know something specific about the academy (exact batch timings, fees, availability), suggest calling or WhatsApping 9905030035. Never invent academy details.
+6. If someone asks something clearly unrelated to art, drawing, painting, design or the academy (maths, coding, homework, politics, general knowledge, etc.), politely reply: "I'm here to help with drawing, painting, art and Rang Tarang classes! 😊 For other topics, please use Google. Want a drawing tip or to know about our courses?" Do not answer the unrelated question.
+7. Be warm, encouraging and beginner-friendly. Kids, teens and adults all ask questions, so keep language simple.`;
 
   const sendChatMessage = async () => {
     const text = chatInput.trim();
@@ -1636,6 +1649,11 @@ STRICT RULES — FOLLOW THESE EXACTLY:
         .contact-grid > div{min-width:0}
         .ink-accent svg{width:100%!important;height:auto!important;display:block}
         /* ── AI CHATBOT ── */
+        .chat-hint{animation:hintIn .5s cubic-bezier(.16,1,.3,1)}
+        @keyframes hintIn{from{opacity:0;transform:translateX(-10px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+        .chat-pulse{animation:chatPulse 2.4s ease-out infinite}
+        @keyframes chatPulse{0%{box-shadow:0 0 0 0 rgba(64,129,117,.55)}70%{box-shadow:0 0 0 14px rgba(64,129,117,0)}100%{box-shadow:0 0 0 0 rgba(64,129,117,0)}}
+        @media(max-width:480px){.chat-hint{font-size:12px!important;white-space:normal!important;width:170px}}
         .chat-bubble-btn{transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
         .chat-bubble-btn:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(64,129,117,.6)!important}
         .chat-window{animation:chatSlideUp .32s cubic-bezier(.16,1,.3,1)}
@@ -2327,7 +2345,7 @@ STRICT RULES — FOLLOW THESE EXACTLY:
             {/* FAQ quick chips */}
             {chatMessages.length === 1 && (
               <div style={{ padding: "12px 16px 0", display: "flex", flexWrap: "wrap", gap: 7, flexShrink: 0 }}>
-                {["What courses do you offer?", "What are the timings?", "Do you have online classes?", "How do I enroll?", "Who is the teacher?"].map(q => (
+                {["What courses do you offer?", "How do I learn shading?", "How do I mix colours?", "How to prepare for NIFT/NID?", "How do I enroll?"].map(q => (
                   <button key={q} onClick={async () => {
                     if (chatLoading) return;
                     const userMsg = { role: "user", content: q };
@@ -2411,11 +2429,27 @@ STRICT RULES — FOLLOW THESE EXACTLY:
           </div>
         )}
 
+        {/* "I can assist you" hint bubble */}
+        {!chatOpen && showChatHint && (
+          <div className="chat-hint" role="status" style={{
+            position:"absolute", left:70, bottom:10, background:"#fff", color:"#2E4540",
+            padding:"9px 34px 9px 14px", borderRadius:"14px 14px 14px 4px",
+            boxShadow:"0 6px 24px rgba(0,0,0,.22)", fontSize:13.5, fontWeight:600,
+            fontFamily:"'DM Sans','Segoe UI',sans-serif", whiteSpace:"nowrap", cursor:"pointer",
+            border:"1px solid rgba(64,129,117,.25)"
+          }} onClick={() => setChatOpen(true)}>
+            Hi! 👋 I can assist you with art &amp; classes
+            <button type="button" aria-label="Close hint" title="Close"
+              onClick={e => { e.stopPropagation(); setShowChatHint(false); }}
+              style={{ position:"absolute", right:6, top:"50%", transform:"translateY(-50%)", width:20, height:20, borderRadius:"50%", border:"none", background:"rgba(0,0,0,.08)", color:"#444", fontSize:11, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", padding:0, lineHeight:1 }}>✕</button>
+          </div>
+        )}
+
         {/* Toggle button */}
         <button
-          className="chat-bubble-btn"
+          className="chat-bubble-btn chat-pulse"
           onClick={() => setChatOpen(o => !o)}
-          aria-label="Open AI chat"
+          aria-label="Open AI assistant"
           style={{
             width: 58,
             height: 58,
